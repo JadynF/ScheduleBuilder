@@ -1,6 +1,8 @@
 import requests
+import pprint
 from datetime import datetime
 from bs4 import BeautifulSoup
+import courses
 
 SESSION = requests.Session()
 
@@ -29,6 +31,7 @@ if (soup.find("select", {"class": "optdefault"}) != None):
     soup = BeautifulSoup(r.content, "html5lib")
     if (soup.find("table", {"class": "dataentrytable"}) != None):
         sinput = input("Enter a subject: ")
+        sinput = sinput.upper()
         payload = {
             "tserve_tip_read_destroy" : "",
             "tserve_host_code" : "HostZero",
@@ -38,13 +41,13 @@ if (soup.find("select", {"class": "optdefault"}) != None):
             "TransactionSource" : "H",
             "ReqNum" : "2"
         }
-        payload["Subject"] = sinput.capitalize()
+        payload["Subject"] = sinput
         r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi", data = payload)
         soup = BeautifulSoup(r.content, "html5lib")
         if (soup.find("table", {"class": "dataentrytable"}) != None):
             cNumInput = input("Enter the course number: ")
-            if (cNumInput.len() < 4):
-                cNumInput += " "
+            if (len(sinput) < 4):
+                sinput += " "
             payload = {
                 "tserve_tip_read_destroy" : "",
                 "tserve_host_code" : "HostZero",
@@ -54,9 +57,36 @@ if (soup.find("select", {"class": "optdefault"}) != None):
                 "TransactionSource" : "H",
                 "ReqNum" : "3"
             }
-            payload["CourseID"] = cNumInput
-            r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi")
+            payload["CourseID"] = sinput + "-" + cNumInput
+            r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi", data = payload)
             soup = BeautifulSoup(r.content, "html5lib")
+            if (soup.find("table", {"class": "datadisplaytable"}) != None):
+                rows = soup.find("table", {"class": "datadisplaytable"}).find("tbody").find_all("tr")
+                courseList = [None]
+                i = 0
+                for row in rows:
+                    tableData = row.find_all("td")
+                    course = None
+                    for data in tableData:
+                        if (data.has_attr("headers")):
+                            header = str(data["headers"])
+                            if (header == "['CourseID']"):
+                                course = courses.Course(data.text)
+                                courseList.append(course)
+                            elif (header == "['CallNumber']"):
+                                course.setCallNum(data.text)
+                            elif (header == "['StatusAndSeats']"):
+                                course.setStatAndSeat(data.text)
+                            elif (header == "['Modality']"):
+                                course.setModality(data.text)
+                            elif (header == "['DaysTimeLocation']"):
+                                course.setSetting(data.text)
+                            elif (header == "['Instructor']"):
+                                course.setInstructor(data.text)
+                for course in courseList:
+                    print(course)
+                    print("-" * 35)
+
             
 else:
     print(False)
