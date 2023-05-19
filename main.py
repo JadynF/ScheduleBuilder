@@ -63,7 +63,7 @@ if (soup.find("select", {"class": "optdefault"}) != None):
             if (soup.find("table", {"class": "datadisplaytable"}) != None):
                 rows = soup.find("table", {"class": "datadisplaytable"}).find("tbody").find_all("tr")
                 courseList = [None]
-                i = 0
+                i = -1
                 for row in rows:
                     tableData = row.find_all("td")
                     course = None
@@ -90,4 +90,3 @@ if (soup.find("select", {"class": "optdefault"}) != None):
             
 else:
     print(False)
-#print(soup)

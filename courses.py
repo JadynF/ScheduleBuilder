@@ -1,6 +1,7 @@
 class Course:
     def __init__(self, section):
-        self.section = section
+        self.course = ""
+        self.section = self.setSection(section)
         self.callNum = 0
         self.open = False
         self.openSeats = None
@@ -10,6 +11,12 @@ class Course:
         self.time = ""
         self.location = ""
         self.instructor = ""
+
+    def setSection(self, section):
+        print(repr(section))
+        parsed = section.split()
+        self.course = parsed[0] + parsed[1]
+        return parsed[2]
 
     def setCallNum(self, newCallNum):
         self.callNum = int(newCallNum)
@@ -26,7 +33,10 @@ class Course:
         self.modality = mode
 
     def setSetting(self, setting):
+        print(repr(setting))
+        return
         parsed = setting.split()
+        
         self.days = parsed[0]
         self.time = parsed[1]
         self.location = parsed[2]
