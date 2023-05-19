@@ -8,7 +8,7 @@ SESSION = requests.Session()
 
 url = "https://boss.latech.edu/ia-bin/tsrvweb.cgi?&WID=W&tserve_tip_write=||WID&ConfigName=rcrssecthp1&ReqNum=1&TransactionSource=H&tserve_trans_config=rcrssecthp1.cfg&tserve_host_code=HostZero&tserve_tiphost_code=TipZero"
 r = SESSION.get(url)
-soup = BeautifulSoup(r.content, "html5lib")
+soup = BeautifulSoup(r.content, "html.parser")
 if (soup.find("select", {"class": "optdefault"}) != None):
     payload = {
         "tserve_tip_read_destroy" : "",
@@ -28,7 +28,7 @@ if (soup.find("select", {"class": "optdefault"}) != None):
         yinput += "4"
     payload["Term"] = yinput
     r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi", data = payload)
-    soup = BeautifulSoup(r.content, "html5lib")
+    soup = BeautifulSoup(r.content, "html.parser")
     if (soup.find("table", {"class": "dataentrytable"}) != None):
         sinput = input("Enter a subject: ")
         sinput = sinput.upper()
@@ -43,7 +43,7 @@ if (soup.find("select", {"class": "optdefault"}) != None):
         }
         payload["Subject"] = sinput
         r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi", data = payload)
-        soup = BeautifulSoup(r.content, "html5lib")
+        soup = BeautifulSoup(r.content, "html.parser")
         if (soup.find("table", {"class": "dataentrytable"}) != None):
             cNumInput = input("Enter the course number: ")
             if (len(sinput) < 4):
@@ -59,11 +59,10 @@ if (soup.find("select", {"class": "optdefault"}) != None):
             }
             payload["CourseID"] = sinput + "-" + cNumInput
             r = SESSION.post("https://boss.latech.edu/ia-bin/tsrvweb.cgi", data = payload)
-            soup = BeautifulSoup(r.content, "html5lib")
+            soup = BeautifulSoup(r.content, "html.parser")
             if (soup.find("table", {"class": "datadisplaytable"}) != None):
-                rows = soup.find("table", {"class": "datadisplaytable"}).find("tbody").find_all("tr")
+                rows = soup.find("table", {"class": "datadisplaytable"}).find_all("tr")
                 courseList = [None]
-                i = -1
                 for row in rows:
                     tableData = row.find_all("td")
                     course = None

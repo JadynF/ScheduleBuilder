@@ -1,3 +1,4 @@
+import re
 class Course:
     def __init__(self, section):
         self.course = ""
@@ -7,8 +8,8 @@ class Course:
         self.openSeats = None
         self.maxSeats = None
         self.modality = ""
-        self.days = ""
-        self.time = ""
+        self.days = None
+        self.time = None
         self.location = ""
         self.instructor = ""
 
@@ -33,14 +34,22 @@ class Course:
         self.modality = mode
 
     def setSetting(self, setting):
-        print(repr(setting))
-        return
-        parsed = setting.split()
+        setting = setting.replace(u'\xa0', u' ')
+        setting = setting.replace(u'\r\n', u' ')
+        print(setting)
+        if (setting.startswith(" ")):
+            self.location = "Main Campus"
+            return
+        elif (setting.startswith("To Be Arranged")):
+            self.location = "TBA"
+            return
+            
+        parsed = re.split(r'\s+', setting)
         
         self.days = parsed[0]
         self.time = parsed[1]
-        self.location = parsed[2]
-        i = 3
+        
+        i = 2
         while (i < len(parsed)):
             self.location += " " + parsed[i]
             i += 1
@@ -53,7 +62,9 @@ class Course:
         string += "Section: " + str(self.section) + "\n" + "Call number: " + str(self.callNum) + "\n" + "Is open: " + str(self.open) + "\n"
         if (self.openSeats != None):
             string += "With " + str(self.openSeats) + " of " + str(self.maxSeats) + " seats open" + "\n"
-        string += "It is " + self.modality + "\n" + "At " + self.time + " every " + self.days + ", located at " + self.location + "\n" + "Being instructed by " + self.instructor
+        if (self.days != None and self.time != None):
+            string += "Every " + self.days + " at " + self.time + "\n"
+        string += "At " + self.location + ", being instructed by " + self.instructor + "\n"
         return string
 
         
