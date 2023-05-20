@@ -20,7 +20,10 @@ if (soup.find("select", {"class": "optdefault"}) != None):
     }
     yinput = input("Enter the year: ")
     qinput = input("Enter the term: ")
-    if (qinput == "winter"):
+    if (qinput == "fall"):
+        year = int(yinput) + 1
+        yinput =  str(year) + "1"
+    elif (qinput == "winter"):
         yinput += "2"
     elif (qinput == "spring"):
         yinput += "3"
@@ -70,7 +73,7 @@ if (soup.find("select", {"class": "optdefault"}) != None):
                         if (data.has_attr("headers")):
                             header = str(data["headers"])
                             if (header == "['CourseID']"):
-                                course = courses.Course(data.text)
+                                course = courses.Course(data.text, sinput)
                                 courseList.append(course)
                             elif (header == "['CallNumber']"):
                                 course.setCallNum(data.text)

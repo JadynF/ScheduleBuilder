@@ -1,6 +1,7 @@
 import re
 class Course:
-    def __init__(self, section):
+    def __init__(self, section, sinput):
+        self.sinput = sinput
         self.course = ""
         self.section = self.setSection(section)
         self.callNum = 0
@@ -14,10 +15,13 @@ class Course:
         self.instructor = ""
 
     def setSection(self, section):
-        print(repr(section))
         parsed = section.split()
-        self.course = parsed[0] + parsed[1]
-        return parsed[2]
+        if (len(self.sinput) > 4):
+            self.course = parsed[0]
+            return parsed[1]
+        else:
+            self.course = parsed[0] + parsed[1]
+            return parsed[2]
 
     def setCallNum(self, newCallNum):
         self.callNum = int(newCallNum)
