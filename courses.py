@@ -13,10 +13,11 @@ class Course:
         self.time = None
         self.location = ""
         self.instructor = ""
+        self.restrictions = None
 
     def setSection(self, section):
         parsed = section.split()
-        if (len(self.sinput) > 4):
+        if (len(self.sinput) >= 4):
             self.course = parsed[0]
             return parsed[1]
         else:
@@ -35,12 +36,12 @@ class Course:
                 self.maxSeats = parsed[4]
 
     def setModality(self, mode):
+        print(repr(mode))
         self.modality = mode
 
     def setSetting(self, setting):
         setting = setting.replace(u'\xa0', u' ')
         setting = setting.replace(u'\r\n', u' ')
-        print(setting)
         if (setting.startswith(" ")):
             self.location = "Main Campus"
             return
@@ -55,20 +56,29 @@ class Course:
         
         i = 2
         while (i < len(parsed)):
-            self.location += " " + parsed[i]
+            self.location += parsed[i] + " "
             i += 1
     
     def setInstructor(self, ins):
-        self.instructor = ins
+        parsed = ins.split()
+        self.instructor = parsed[0] + " " + parsed[1][0]
+        if (len(parsed[1]) > 1):
+            self.restrictions = parsed[1][1 : len(parsed[1])]
+            for i in range(2, len(parsed)):
+                self.restrictions += " " + parsed[i]
+        
 
     def __str__(self):
         string = ""
         string += "Section: " + str(self.section) + "\n" + "Call number: " + str(self.callNum) + "\n" + "Is open: " + str(self.open) + "\n"
         if (self.openSeats != None):
             string += "With " + str(self.openSeats) + " of " + str(self.maxSeats) + " seats open" + "\n"
+        string += "Modality: " + self.modality + "\n"
         if (self.days != None and self.time != None):
             string += "Every " + self.days + " at " + self.time + "\n"
         string += "At " + self.location + ", being instructed by " + self.instructor + "\n"
+        if (self.restrictions != None):
+            string += "Restrictions: " + self.restrictions
         return string
 
         

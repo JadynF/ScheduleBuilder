@@ -69,12 +69,18 @@ if (soup.find("select", {"class": "optdefault"}) != None):
                 for row in rows:
                     tableData = row.find_all("td")
                     course = None
+                    nullRow = False
                     for data in tableData:
-                        if (data.has_attr("headers")):
+                        if (nullRow):
+                            continue
+                        elif (data.has_attr("headers")):
                             header = str(data["headers"])
                             if (header == "['CourseID']"):
-                                course = courses.Course(data.text, sinput)
-                                courseList.append(course)
+                                if (len(data.text) > 1):
+                                    course = courses.Course(data.text, sinput)
+                                    courseList.append(course)
+                                else:
+                                    nullRow = True
                             elif (header == "['CallNumber']"):
                                 course.setCallNum(data.text)
                             elif (header == "['StatusAndSeats']"):
