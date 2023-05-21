@@ -17,7 +17,7 @@ class Course:
 
     def setSection(self, section):
         parsed = section.split()
-        if (len(self.sinput) >= 4):
+        if (" " not in self.sinput):
             self.course = parsed[0]
             return parsed[1]
         else:
@@ -25,10 +25,14 @@ class Course:
             return parsed[2]
 
     def setCallNum(self, newCallNum):
+        if (len(newCallNum) == 0):
+            return
         self.callNum = int(newCallNum)
     
     def setStatAndSeat(self, sAndS):
         parsed = sAndS.split()
+        if (len(parsed) == 0):
+            return
         if (parsed[0] == "Open"):
             self.open = True
             if (len(parsed) == 5):
@@ -36,7 +40,9 @@ class Course:
                 self.maxSeats = parsed[4]
 
     def setModality(self, mode):
-        print(repr(mode))
+        if (len(mode) == 0):
+            self.modality = "Not Specified"
+            return
         self.modality = mode
 
     def setSetting(self, setting):
@@ -61,6 +67,8 @@ class Course:
     
     def setInstructor(self, ins):
         parsed = ins.split()
+        if (len(parsed) == 0):
+            return
         self.instructor = parsed[0] + " " + parsed[1][0]
         if (len(parsed[1]) > 1):
             self.restrictions = parsed[1][1 : len(parsed[1])]
