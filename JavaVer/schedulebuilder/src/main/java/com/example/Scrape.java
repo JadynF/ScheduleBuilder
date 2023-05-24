@@ -7,7 +7,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
-import org.jsoup.nodes.Node;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import java.util.ArrayList;
@@ -19,19 +18,23 @@ public class Scrape
     public Scrape() // initialize the WebDriver
     {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        //ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless=new");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
         this.driver = new ChromeDriver();
     }
 
-    public Courses[] getCourseData(String year, String quarter, String subject, String cNum) {
+    public void closeDriver() {
+        this.driver.close();
+    }
+
+    public ArrayList<Courses> getCourseData(String year, String quarter, String subject, String cNum) {
         String html = goToCoursePage(year, quarter, subject, cNum);
         Document doc = Jsoup.parse(html);
         Elements tables = doc.select("table");
+        ArrayList<Courses> courseList = new ArrayList<Courses>();
         for (Element table : tables) {
             if (table.hasClass("datadisplaytable")) {
                 Elements rows = table.select("tr");
-                ArrayList<Courses> courseList = new ArrayList<Courses>();
                 for (Element row : rows) {
                     Elements rowData = row.select("td");
                     Courses currCourse = null;
@@ -43,7 +46,7 @@ public class Scrape
                             String headerValue = cellData.attr("headers");
                             if (headerValue.equals("CourseID")) {
                                 if (cellData.text().length() > 1) {
-                                    currCourse = new Courses(cellData.text(), cNum);
+                                    currCourse = new Courses(cellData.text(), subject);
                                     courseList.add(currCourse);
                                 }
                                 else {
@@ -63,13 +66,9 @@ public class Scrape
                         }
                     }
                 }
-                for (Courses c : courseList) {
-                    c.print();
-                    System.out.println("*******************************************");
-                }
             }
         }
-        return null;
+        return courseList;
     }
 
     public String goToCoursePage(String year, String quarter, String subject, String cNum) { // navigate to the courses page, return the html document or return null if error
