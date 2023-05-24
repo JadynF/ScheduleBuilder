@@ -1,7 +1,6 @@
 package com.example;
 public class Courses {
     
-
     private String course;
     private String section;
     private String callNum;
@@ -20,12 +19,14 @@ public class Courses {
     private String restrictions;
     private Boolean cancelled = false;
 
-    public Courses(String sec, String sub) {
-        this.section = setSection(sec, sub);
+    public Courses(String sec) {
+        this.section = setSection(sec);
 
     }
 
-    public String setSection(String sec, String sub) {
+    ////////////////////////////////////////// SETTERS ////////////////////////////////////////////////
+
+    public String setSection(String sec) {
         String[] parsed = sec.split("-");
         this.course = parsed[0] + "-" + parsed[1];
         parsed = parsed[2].split("\\s+");
@@ -101,23 +102,7 @@ public class Courses {
         this.instructor = parsed[0] + " " + parsed[1].charAt(0);
     }
 
-    public void print() {
-        if (this.cancelled) {
-            System.out.println("CANCELLED");
-            return;
-        }
-        System.out.println("Course: " + this.course + this.section);
-        System.out.println("Call number: " + this.callNum);
-        if (this.open) {
-            System.out.println(this.openSeats + "/" + this.maxSeats + " seats are open");
-        }
-        System.out.println("Modality: " + this.modality);
-        System.out.println("Days: " + this.days);
-        System.out.println("Time: " + this.time);
-        System.out.println(this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd);
-        System.out.println("Location: " + this.location);
-        System.out.println("Instructor: " + this.instructor);
-    }
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////// GETTERS /////////////////////////////////////////////
 
@@ -187,5 +172,25 @@ public class Courses {
     
     public Boolean getCancelled() {
         return this.cancelled;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    public void print() {
+        if (this.cancelled) {
+            System.out.println("CANCELLED");
+            return;
+        }
+        System.out.println("Course: " + this.course + this.section);
+        System.out.println("Call number: " + this.callNum);
+        if (this.open) {
+            System.out.println(this.openSeats + "/" + this.maxSeats + " seats are open");
+        }
+        System.out.println("Modality: " + this.modality);
+        System.out.println("Days: " + this.days);
+        System.out.println("Time: " + this.time);
+        System.out.println(this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd);
+        System.out.println("Location: " + this.location);
+        System.out.println("Instructor: " + this.instructor);
     }
 }

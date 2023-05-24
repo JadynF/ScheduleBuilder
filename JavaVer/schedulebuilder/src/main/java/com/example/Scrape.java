@@ -20,38 +20,30 @@ public class Scrape
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
-        this.driver = new ChromeDriver();
+        this.driver = new ChromeDriver(options);
     }
 
     public void closeDriver() {
         this.driver.close();
     }
 
-    public ArrayList<Courses> getCourseData(String year, String quarter, String subject, String cNum) {
+    public ArrayList<Courses> getCourseData(String year, String quarter, String subject, String cNum) { // takes desired course year, quarter, subject, and number as strings, returns list of available classes for desired course
         String html = goToCoursePage(year, quarter, subject, cNum);
         Document doc = Jsoup.parse(html);
-        Elements tables = doc.select("table");
+        Elements tables = doc.select("table"); // select all tables
         ArrayList<Courses> courseList = new ArrayList<Courses>();
-        for (Element table : tables) {
-            if (table.hasClass("datadisplaytable")) {
-                Elements rows = table.select("tr");
+        for (Element table : tables) { // go through each table
+            if (table.hasClass("datadisplaytable")) { // check for correct table
+                Elements rows = table.select("tr"); // go through each row in table
                 for (Element row : rows) {
                     Elements rowData = row.select("td");
                     Courses currCourse = null;
-                    Boolean nullRow = false;
-                    for (Element cellData : rowData) {
-                        if (nullRow) 
-                            continue;
-                        else if (cellData.hasAttr("headers")) {
-                            String headerValue = cellData.attr("headers");
+                    for (Element cellData : rowData) { // get each cell in row
+                        if (cellData.hasAttr("headers")) {
+                            String headerValue = cellData.attr("headers"); // add attribute to object where necessary
                             if (headerValue.equals("CourseID")) {
-                                if (cellData.text().length() > 1) {
-                                    currCourse = new Courses(cellData.text(), subject);
-                                    courseList.add(currCourse);
-                                }
-                                else {
-                                    nullRow = true;
-                                }
+                                currCourse = new Courses(cellData.text());
+                                courseList.add(currCourse); // make new course object
                             }
                             else if (headerValue.equals("CallNumber"))
                                 currCourse.setCallNum(cellData.text());
@@ -65,6 +57,9 @@ public class Scrape
                                 currCourse.setInstructor(cellData.text());
                         }
                     }
+                    // if object doesnt have adequate data, remove from list
+                    if (currCourse != null && (currCourse.getDays() == null || currCourse.getCallNum() == null || currCourse.getTime() == null  || currCourse.getCancelled()))
+                        courseList.remove(courseList.size() - 1);
                 }
             }
         }
@@ -116,6 +111,7 @@ public class Scrape
             // get and return html document
             String html = this.driver.getPageSource();
             return html;
+
         } catch (Exception e) {
             System.out.println(e);
             return null;
