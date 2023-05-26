@@ -1,28 +1,33 @@
 package com.example;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Schedule {
     private ArrayList<ArrayList<Courses>> schedules;
     private int earliestClassHour;
+    private int latestClassHour;
     private int maxTR;
     private int maxMWF;
-    //private HashMap<String, String> rCourses;
+    private String[][] rCourses;
+    private String[][] rInstructor;
 
     public Schedule() {
         schedules = new ArrayList<ArrayList<Courses>>();
         this.earliestClassHour = 0;
+        this.latestClassHour = -1;
         this.maxTR = -1;
         this.maxMWF = -1;
-        //this.rCourses = null;
+        this.rCourses = null;
+        this.rInstructor = null;
     }
 
-    public Schedule(int earliestStartHour, int maxClassTR, int maxClassMWF) {//, HashMap<String, String> requiredCourses) {
+    public Schedule(int earliestStartHour, int latestEndHour, int maxClassTR, int maxClassMWF, String[][] requiredCourses, String[][] requiredInstructor) {
         schedules = new ArrayList<ArrayList<Courses>>();
         this.earliestClassHour = earliestStartHour;
+        this.latestClassHour = latestEndHour;
         this.maxTR = maxClassTR;
         this.maxMWF = maxClassMWF;
-        //this.rCourses = requiredCourses;
+        this.rCourses = requiredCourses;
+        this.rInstructor = requiredInstructor;
     }
 
     public ArrayList<ArrayList<Courses>> getSchedules() {
@@ -51,22 +56,58 @@ public class Schedule {
     }
 
     public Boolean compatable(Courses c, ArrayList<Courses> schedule) { // when passed a Courses object and an array of Courses, will return true if their times dont overlap, false if they do overlap
-        //System.out.println(c.getSubject());
-        //System.out.println(c.getCourse());
-        //System.out.println(c.getSection());
-        //System.out.println(this.rCourses.containsValue(c.getSection()));
-        //System.out.println(this.rCourses.containsKey(c.getSubject() + "-" + c.getCourse()));
-        //String sAndC = c.getSubject() + "-" + c.getCourse();
-        //System.out.println(this.rCourses.get(c.getCourse() + "-" + c.getCourse()));
-        //if (this.rCourses.containsKey(c.getSubject() + "-" + c.getCourse())) {
-        //    if (!this.rCourses.get(c.getCourse() + "-" + c.getCourse()).equals(c.getSection())) {
-        //        return false;
-        //    }
-        //}
-        int currMWF = 0;
-        int currTR = 0;
+        
+        // loop through required courses, return false for courses with same subject, course, but different section
+        if (this.rCourses != null) {
+            if (!isRequiredSection(c))
+                return false;
+        }
+        
+        // check required instructor
+        if (this.rInstructor != null) {
+            if (!isRequiredInstructor(c))
+                return false;
+        }
+
+        // check earliest start time
         if (c.getHourStart() < this.earliestClassHour)
             return false;
+
+        // check latest end time
+        if (this.latestClassHour != -1 && c.getHourEnd() > this.latestClassHour)
+            return false;
+
+        if (!isRequiredSetting(c, schedule))
+            return false;
+        
+        return true;
+    }
+
+    private boolean isRequiredSection(Courses c) {
+        for (int i = 0; i < this.rCourses.length; i++) {
+            if ((this.rCourses[i][0] + this.rCourses[i][1]).equals(c.getSubject() + c.getCourse())) {
+                if (!this.rCourses[i][2].equals(c.getSection()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isRequiredInstructor(Courses c) {
+        for (int i = 0; i < this.rInstructor.length; i++) {
+            if (this.rInstructor[i][0].equals(c.getSubject() + c.getCourse())) {
+                if (!this.rInstructor[i][1].equals(c.getInstructor()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isRequiredSetting(Courses c, ArrayList<Courses> schedule) {
+        int currMWF = 0;
+        int currTR = 0;
+
+        // check time compatability
         String cDays = c.getDays();
         for (int i = 0; i < schedule.size(); i++) { // loop through each course in current schedule
             String sDays = schedule.get(i).getDays();
@@ -97,6 +138,8 @@ public class Schedule {
                 }
             }
         }
+
+        // check if day is already full
         if (this.maxMWF != -1) {
             if ((cDays.contains("M") || cDays.contains("W") || cDays.contains("F")) && (currMWF >= this.maxMWF))
                 return false;
