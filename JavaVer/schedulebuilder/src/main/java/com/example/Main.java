@@ -1,5 +1,6 @@
 package com.example;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
 
@@ -7,12 +8,16 @@ public class Main {
         Scrape webScraper = new Scrape();
 
         ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>();
-        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "325"));
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "COMM", "101"));
-        coursesList.add(webScraper.getCourseData("2023", "fall", "MATH", "308"));
-        coursesList.add(webScraper.getCourseData("2023", "fall", "STAT", "405"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "130"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "MATH", "240"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "HNRS", "100"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "BISC", "101"));
         webScraper.closeDriver();
-        Schedule scheduleObject = new Schedule();
+        
+        HashMap<String, String> requiredCourses = new HashMap<String, String>();
+        requiredCourses.put("CSC-130", "H01");
+
+        Schedule scheduleObject = new Schedule(12, -1, -1);
         scheduleObject.getSchedules(0, new ArrayList<Courses>(), coursesList);
         ArrayList<ArrayList<Courses>> schedules = scheduleObject.getSchedules();
 

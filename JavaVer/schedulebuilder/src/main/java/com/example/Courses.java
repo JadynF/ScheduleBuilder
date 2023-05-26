@@ -2,6 +2,7 @@ package com.example;
 public class Courses {
     
     private String course;
+    private String subject;
     private String section;
     private String callNum;
     private Boolean open = false;
@@ -28,9 +29,10 @@ public class Courses {
 
     public String setSection(String sec) {
         String[] parsed = sec.split("-");
-        this.course = parsed[0] + "-" + parsed[1];
+        this.subject = parsed[0].replaceAll("\\s+", "");
+        this.course = parsed[1].replaceAll("\\s+", "");
         parsed = parsed[2].split("\\s+");
-        return "-" + parsed[0];
+        return parsed[0];
     }
 
     public void setCallNum(String newCNum) {
@@ -109,6 +111,10 @@ public class Courses {
     public String getCourse() {
         return this.course;
     }
+
+    public String getSubject() {
+        return this.subject;
+    }
     
     public String getSection() {
         return this.section;
@@ -181,7 +187,7 @@ public class Courses {
             System.out.println("CANCELLED");
             return;
         }
-        System.out.println("Course: " + this.course + this.section);
+        System.out.println("Course: " + this.subject + " " + this.course + " " + this.section);
         System.out.println("Call number: " + this.callNum);
         if (this.open) {
             System.out.println(this.openSeats + "/" + this.maxSeats + " seats are open");
