@@ -9,6 +9,8 @@ public class Schedule {
     private int maxMWF;
     private String[][] rCourses;
     private String[][] rInstructor;
+    private Boolean virtual;
+    private Boolean honors;
 
     public Schedule() {
         schedules = new ArrayList<ArrayList<Courses>>();
@@ -18,9 +20,12 @@ public class Schedule {
         this.maxMWF = -1;
         this.rCourses = null;
         this.rInstructor = null;
+        this.virtual = true;
+        this.honors = true;
     }
 
-    public Schedule(int earliestStartHour, int latestEndHour, int maxClassTR, int maxClassMWF, String[][] requiredCourses, String[][] requiredInstructor) {
+    // to add filter, called with earliest hour, latest hour, max amount of classes for TF and MWF, the required courses {{Subject + Course, CallNumber}}, and the required instructors {{Subject + Course, Instructor}}
+    public Schedule(int earliestStartHour, int latestEndHour, int maxClassTR, int maxClassMWF, String[][] requiredCourses, String[][] requiredInstructor, Boolean allowHonors, Boolean allowVirtual) {
         schedules = new ArrayList<ArrayList<Courses>>();
         this.earliestClassHour = earliestStartHour;
         this.latestClassHour = latestEndHour;
@@ -28,6 +33,8 @@ public class Schedule {
         this.maxMWF = maxClassMWF;
         this.rCourses = requiredCourses;
         this.rInstructor = requiredInstructor;
+        this.honors = allowHonors;
+        this.virtual = allowVirtual;
     }
 
     public ArrayList<ArrayList<Courses>> getSchedules() {
@@ -65,8 +72,23 @@ public class Schedule {
         
         // check required instructor
         if (this.rInstructor != null) {
-            if (!isRequiredInstructor(c))
+            if (!isRequiredInstructor(c)) {
                 return false;
+            }
+        }
+
+        // check for honors
+        if (!this.honors) {
+            if (c.isHonors())
+                return false;
+        }
+
+        // check for virtual
+        if (c.getModality().equals("Asynchronous Online")) {
+            if (!this.virtual)
+                return false;
+            else
+                return true;
         }
 
         // check earliest start time
@@ -77,6 +99,7 @@ public class Schedule {
         if (this.latestClassHour != -1 && c.getHourEnd() > this.latestClassHour)
             return false;
 
+        // check for conflicting times
         if (!isRequiredSetting(c, schedule))
             return false;
         

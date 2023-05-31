@@ -58,8 +58,9 @@ public class Scrape
                         }
                     }
                     // if object doesnt have adequate data, remove from list
-                    if (currCourse != null && (currCourse.getDays() == null || currCourse.getCallNum() == null || currCourse.getTime() == null  || currCourse.getCancelled()))
+                    if (currCourse != null && (currCourse.getOpen() == false || (currCourse.getDays() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCallNum() == null || (currCourse.getTime() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCancelled())) {
                         courseList.remove(courseList.size() - 1);
+                    }
                 }
             }
         }

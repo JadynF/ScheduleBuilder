@@ -8,16 +8,16 @@ public class Main {
         Scrape webScraper = new Scrape();
 
         ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>();
-        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "403"));
-        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "450"));
-        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "452"));
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "BISC", "101"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "130"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "HNRS", "100"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "MATH", "240"));
+        coursesList.add(webScraper.getCourseData("2023", "fall", "ENGL", "101"));
         webScraper.closeDriver();
         
         String[][] requiredCourses = null;//{{"HNRS", "100", "H03"}};
-        String[][] requiredInstructor = {{"CSC130", "CHERRY K"}, {"MATH240", "MCADAMS S"}};
+        String[][] requiredInstructor = {{"CSC130", "CHERRY K"}, {"MATH240", "BOYET C"}};
 
-        Schedule scheduleObject = new Schedule();
+        Schedule scheduleObject = new Schedule(-1, -1, -1, -1, null, null, true, true);
         scheduleObject.getSchedules(0, new ArrayList<Courses>(), coursesList);
         ArrayList<ArrayList<Courses>> schedules = scheduleObject.getSchedules();
 

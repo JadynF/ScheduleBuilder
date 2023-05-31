@@ -1,4 +1,5 @@
 package com.example;
+
 public class Courses {
     
     private String course;
@@ -18,6 +19,7 @@ public class Courses {
     private String location;
     private String instructor;
     private String restrictions;
+    private Boolean honors = false;
     private Boolean cancelled = false;
 
     public Courses(String sec) {
@@ -28,6 +30,8 @@ public class Courses {
     ////////////////////////////////////////// SETTERS ////////////////////////////////////////////////
 
     public String setSection(String sec) {
+        if (sec.contains("HONORS") || sec.contains("Honors"))
+            this.honors = true;
         String[] parsed = sec.split("-");
         this.subject = parsed[0].replaceAll("\\s+", "");
         this.course = parsed[1].replaceAll("\\s+", "");
@@ -39,6 +43,8 @@ public class Courses {
         if (newCNum.length() == 0)
             return;
         this.callNum = newCNum;
+        if (this.callNum.contains("H"))
+            this.honors = true;
     }
 
     public void setStatAndSeat(String sAndS) {
@@ -102,6 +108,10 @@ public class Courses {
         if (parsed.length <= 1)
             return;
         this.instructor = parsed[0] + " " + parsed[1].charAt(0);
+        this.restrictions = "";
+        for (int i = 2; i < parsed.length; i++) {
+            this.restrictions += parsed[i] + " ";
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +190,10 @@ public class Courses {
         return this.cancelled;
     }
 
+    public Boolean isHonors() {
+        return this.honors;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////
 
     public void print() {
@@ -198,5 +212,8 @@ public class Courses {
         System.out.println(this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd);
         System.out.println("Location: " + this.location);
         System.out.println("Instructor: " + this.instructor);
+        if (!this.restrictions.equals("")) {
+            System.out.println("Restrictions: " + this.restrictions);
+        }
     }
 }
