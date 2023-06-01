@@ -9,6 +9,7 @@ public class Schedule {
     private int maxMWF;
     private String[][] rCourses;
     private String[][] rInstructor;
+    private String[][] pInstructor;
     private Boolean virtual;
     private Boolean honors;
 
@@ -20,12 +21,13 @@ public class Schedule {
         this.maxMWF = -1;
         this.rCourses = null;
         this.rInstructor = null;
+        this.pInstructor = null;
         this.virtual = true;
         this.honors = true;
     }
 
     // to add filter, called with earliest hour, latest hour, max amount of classes for TF and MWF, the required courses {{Subject + Course, CallNumber}}, and the required instructors {{Subject + Course, Instructor}}
-    public Schedule(int earliestStartHour, int latestEndHour, int maxClassTR, int maxClassMWF, String[][] requiredCourses, String[][] requiredInstructor, Boolean allowHonors, Boolean allowVirtual) {
+    public Schedule(int earliestStartHour, int latestEndHour, int maxClassTR, int maxClassMWF, String[][] requiredCourses, String[][] requiredInstructor, String[][] prohibitedInstructor, Boolean allowHonors, Boolean allowVirtual) {
         schedules = new ArrayList<ArrayList<Courses>>();
         this.earliestClassHour = earliestStartHour;
         this.latestClassHour = latestEndHour;
@@ -33,6 +35,7 @@ public class Schedule {
         this.maxMWF = maxClassMWF;
         this.rCourses = requiredCourses;
         this.rInstructor = requiredInstructor;
+        this.pInstructor = prohibitedInstructor;
         this.honors = allowHonors;
         this.virtual = allowVirtual;
     }
@@ -62,6 +65,7 @@ public class Schedule {
         }
     }
 
+    // check if the course can be added to current schedule
     public Boolean compatable(Courses c, ArrayList<Courses> schedule) { // when passed a Courses object and an array of Courses, will return true if their times dont overlap, false if they do overlap
         
         // loop through required courses, return false for courses with same subject, course, but different section
@@ -73,6 +77,12 @@ public class Schedule {
         // check required instructor
         if (this.rInstructor != null) {
             if (!isRequiredInstructor(c)) {
+                return false;
+            }
+        }
+
+        if (this.pInstructor != null) {
+            if (isProhibitedInstructor(c)) {
                 return false;
             }
         }
@@ -106,6 +116,7 @@ public class Schedule {
         return true;
     }
 
+    // checks for required sections of specific courses
     private boolean isRequiredSection(Courses c) {
         for (int i = 0; i < this.rCourses.length; i++) {
             if ((this.rCourses[i][0] + this.rCourses[i][1]).equals(c.getSubject() + c.getCourse())) {
@@ -116,6 +127,7 @@ public class Schedule {
         return true;
     }
 
+    // returns true if current instructor matches the instructor (for the specific course) in instructors
     private boolean isRequiredInstructor(Courses c) {
         for (int i = 0; i < this.rInstructor.length; i++) {
             if (this.rInstructor[i][0].equals(c.getSubject() + c.getCourse())) {
@@ -126,6 +138,17 @@ public class Schedule {
         return true;
     }
 
+    private boolean isProhibitedInstructor(Courses c) {
+        for (int i = 0; i < this.pInstructor.length; i++) {
+            if (this.pInstructor[i][0].equals(c.getSubject() + c.getCourse())) {
+                if (this.pInstructor[i][1].equals(c.getInstructor()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    // checks for max days and time conflicts, 
     private boolean isRequiredSetting(Courses c, ArrayList<Courses> schedule) {
         int currMWF = 0;
         int currTR = 0;

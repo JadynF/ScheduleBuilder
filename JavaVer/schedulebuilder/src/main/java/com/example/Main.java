@@ -16,8 +16,9 @@ public class Main {
         
         String[][] requiredCourses = null;//{{"HNRS", "100", "H03"}};
         String[][] requiredInstructor = {{"CSC130", "CHERRY K"}, {"MATH240", "BOYET C"}};
+        String[][] prohibitedInstructor = {{"CSC130", "CHERRY K"}};
 
-        Schedule scheduleObject = new Schedule(-1, -1, -1, -1, null, null, true, true);
+        Schedule scheduleObject = new Schedule(-1, -1, -1, -1, null, null, null, true, true);
         scheduleObject.getSchedules(0, new ArrayList<Courses>(), coursesList);
         ArrayList<ArrayList<Courses>> schedules = scheduleObject.getSchedules();
 
