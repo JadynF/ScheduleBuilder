@@ -44,7 +44,7 @@ public class Schedule {
         return this.schedules;
     }
 
-    public void getSchedules(int i, ArrayList<Courses> schedule, ArrayList<ArrayList<Courses>> coursesList) { // passed an integer for number of unique courses, an empty list of courses, and the list of course lists, will build schedules
+    public void calculateSchedules(int i, ArrayList<Courses> schedule, ArrayList<ArrayList<Courses>> coursesList) { // passed an integer for number of unique courses, an empty list of courses, and the list of course lists, will build schedules
         if (i == coursesList.size()) {  // if looped through each unique course, then all desired courses are present on schedule
             ArrayList<Courses> newSchedule = new ArrayList<Courses>(); // copy schedule
             for (Courses c : schedule) {
@@ -57,7 +57,7 @@ public class Schedule {
             for (int j = 0; j < coursesList.get(i).size(); j++) { // loop through the "i"th course
                 if (compatable(coursesList.get(i).get(j), schedule)) { // if schedule is empty, create new schedule, if not empty, check if course at (i, j) is compatable with courses present in schedule
                     schedule.add(coursesList.get(i).get(j)); 
-                    getSchedules(i + 1, schedule, coursesList); // go on to next course list in courseList
+                    calculateSchedules(i + 1, schedule, coursesList); // go on to next course list in courseList
                     schedule.remove(i); // remove course from schedule once done
                 }
             }
