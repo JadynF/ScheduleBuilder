@@ -1,83 +1,76 @@
 package com.example;
 
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.io.*;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.HashMap;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
 
 public class Server {
     public static void main(String[] args) throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+        HttpServer sv = HttpServer.create(new InetSocketAddress(8080), 0);
+        sv.createContext("/", new Handler());
+        sv.setExecutor(null);
+        sv.start();
+    }
 
-            while (true) {
-                try (Socket client = serverSocket.accept()) {
-                    InputStreamReader reader = new InputStreamReader(client.getInputStream());
-                    BufferedReader br = new BufferedReader(reader);
-                    StringBuilder request = new StringBuilder();
-
-                    String line;
-                    line = br.readLine();
-                    String firstLine = line;
-                    int contentLength = 0;
-                    String resource = line.split(" ")[1]; // get aany resources the html needs
-
-                    // get the entire reqeust
-                    while (!line.isBlank()) {
-                        request.append(line + "\r\n");
-                        if (line.startsWith("Content-Length")) {
-                            contentLength = Integer.valueOf(line.split(" ")[1]);
-                        }
-                        line = br.readLine();
-                    }
-
-                    System.out.println(request);
-
-                    OutputStream clientOutput = client.getOutputStream();
-                    // handle get requests
-                    if (firstLine.startsWith("GET")) {
-                        if (resource.equals("/")) {
-                            FileInputStream html = new FileInputStream("HomePage.html");
-                            FileInputStream img = new FileInputStream("sadie.png");
-
-                            clientOutput.write(("HTTP/1.1 200 OK\r\n").getBytes());
-                            clientOutput.write(("\r\n").getBytes());
-                            clientOutput.write(html.readAllBytes());
-                            clientOutput.flush();
-
-                            html.close();
-                            img.close();
-                        }
-                        else if (resource.equals("/sadie.png")) { 
-                            FileInputStream img = new FileInputStream("sadie.png");
-                            clientOutput.write(("HTTP/1.1 200 OK\r\n").getBytes());
-                            clientOutput.write(("\r\n").getBytes());
-                            clientOutput.write(img.readAllBytes());
-                            img.close();
-                        }
-                        else if (resource.equals("/favicon.ico")) {
-                            FileInputStream img = new FileInputStream("favicon.png");
-                            clientOutput.write(("HTTP/1.1 200 OK\r\n").getBytes());
-                            clientOutput.write(("\r\n").getBytes());
-                            clientOutput.write(img.readAllBytes());
-                            img.close();
-                        }
-                    }
-                    // handle post requests
-                    else if (firstLine.startsWith("POST")) {
-                        byte[] buffer = new byte[contentLength];
-                        String data = "";
-                        //line = br.readLine();
-                        System.out.println(line);
-                    }
-
-                    client.close();
+    static class Handler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            System.out.println(exchange.getRequestMethod());
+            System.out.println(exchange.getRequestHeaders());
+            System.out.println(exchange.getRequestBody());
+            System.out.println(exchange.getRequestURI());
+            OutputStream os = exchange.getResponseBody();
+            String resource = exchange.getRequestURI().toString();
+            if (exchange.getRequestMethod().equals("GET")) {
+                if (resource.equals("/")) {
+                    FileInputStream html = new FileInputStream("HomePage.html");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(html.readAllBytes());
+                    html.close();
+                    os.close();
                 }
-                catch (Exception f) {
-                    System.out.println(f);
+                else if (resource.equals("/sadie.png")) {
+                    FileInputStream img = new FileInputStream("sadie.png");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(img.readAllBytes());
+                    img.close();
+                    os.close();
+                }
+                else if (resource.equals("/homescript.js")) {
+                    FileInputStream js = new FileInputStream("homescript.js");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(js.readAllBytes());
+                    js.close();
+                    os.close();
                 }
             }
-        }
-        catch (Exception e) {
-            System.out.println(e);
+            else if (exchange.getRequestMethod().equals("POST")) {
+                String data = "";
+                InputStream in = exchange.getRequestBody();
+                int bytes;
+                while ((bytes = in.read()) != -1) {
+                    data += (char) bytes;
+                }
+                String[] q = data.split("&");
+                Map<String, String> pairs = new HashMap<String, String>();
+                for (String query : q) {
+                    String[] parts = query.split("=");
+                    pairs.put(parts[0], parts[1]);
+                }
+                System.out.println(pairs.toString());
+                if (resource.equals("/submit")) {
+                    String year = pairs.get("Year");
+                    System.out.println(year);
+                    String quarter = pairs.get("Quarter");
+                    String[] courses = {pairs.get("CourseName")};
+                    String[] courseNums = {pairs.get("CourseID")};
+                    ScrapeThread t = new ScrapeThread(exchange, os, year, quarter, courses, courseNums);
+                    new Thread(t).start();
+                }
+            }
         }
     }
 }

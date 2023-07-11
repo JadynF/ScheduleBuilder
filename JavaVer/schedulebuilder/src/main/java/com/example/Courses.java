@@ -216,4 +216,48 @@ public class Courses {
             System.out.println("Restrictions: " + this.restrictions);
         }
     }
+
+    public String toString() {
+        String result = "";
+        if (this.cancelled) {
+            return "CANCELLED";
+        }
+        result += "Course: " + this.subject + " " + this.course + " " + this.section + "\n";
+        result += "Call number: " + this.callNum + "\n";
+        if (this.open) {
+            result += this.openSeats + "/" + this.maxSeats + " seats are open\n";
+        }
+        result += "Modality: " + this.modality + "\n";
+        result += "Days: " + this.days + "\n";
+        result += "Time: " + this.time + "\n";
+        result += this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd + "\n";
+        result += "Location: " + this.location + "\n";
+        result += "Instructor: " + this.instructor + "\n";
+        if (!this.restrictions.equals("")) {
+            result += "Restrictions: " + this.restrictions + "\n";
+        }
+        return result;
+    }
+
+    public String toHTML() {
+        String result = "";
+        if (this.cancelled) {
+            return "<p>CANCELLED</p>";
+        }
+        result += "<p>Course: " + this.subject + " " + this.course + " " + this.section + "</p>";
+        result += "<p>Call number: " + this.callNum + "</p>";
+        if (this.open) {
+            result += "<p>" + this.openSeats + "/" + this.maxSeats + " seats are open</p>";
+        }
+        result += "<p>Modality: " + this.modality + "</p>";
+        result += "<p>Days: " + this.days + "</p>";
+        result += "<p>Time: " + this.time + "</p>";
+        result += "<p>" + this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd + "</p>";
+        result += "<p>Location: " + this.location + "</p>";
+        result += "<p>Instructor: " + this.instructor + "</p>";
+        if (!this.restrictions.equals("")) {
+            result += "<p>Restrictions: " + this.restrictions + "</p>";
+        }
+        return result;
+    }
 }

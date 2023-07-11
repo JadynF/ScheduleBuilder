@@ -2,15 +2,38 @@
 <html>
     <head>
         <title>Home Page</title>
+        <script src="homescript.js" defer></script>
     </head>
     <body>
-        <h1>Look at this fat rat</h1>
-        <img src="sadie.png" width="400" height="500" alt="fat rat">
-        <form method="post" action="/submit">
-            <p>
-                <input type="submit">
-                <input type="text" id="Course" name="Course">
-            </p>
+        <div class="header">
+            <h1>Create Your Schedule!</h1>
+        </div>
+        <div class="formHead">
+            <h2>Enter Your Desired Courses</h2>
+        </div>
+        <hr>
+        <form method="post" action="/submit" class="form">
+            <div class="dates">
+                <p>
+                    <input type="number" id="Year" name="Year">
+                </p>
+                <p>
+                    <input type="text" id="Quarter" name="Quarter">
+                </p>
+            </div>
+            <hr>
+            <div class="changeCourses">
+                <button type="button" id="newCourseButton">Add Another Course</button>
+                <button type="button" id="deleteCourseButton">Delete Course</button>
+            </div>
+            <div class="courseInput" id="courseInput">
+                <p>
+                    <input type="text" id="CourseName1" name="CourseName1">
+                    <input type="text" id="CourseID1" name="CourseID1">
+                </p>
+            </div>
+            <hr>
+            <input type="submit">
         </form>
     </body>
 </html>

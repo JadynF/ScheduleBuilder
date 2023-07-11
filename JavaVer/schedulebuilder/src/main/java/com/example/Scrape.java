@@ -20,7 +20,7 @@ public class Scrape
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
-        this.driver = new ChromeDriver(options);
+        this.driver = new ChromeDriver();
     }
 
     public void closeDriver() {
