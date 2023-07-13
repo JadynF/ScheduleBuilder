@@ -18,10 +18,10 @@ public class Server {
 
     static class Handler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            System.out.println(exchange.getRequestMethod());
-            System.out.println(exchange.getRequestHeaders());
-            System.out.println(exchange.getRequestBody());
-            System.out.println(exchange.getRequestURI());
+            //System.out.println(exchange.getRequestMethod());
+            //System.out.println(exchange.getRequestHeaders());
+            //System.out.println(exchange.getRequestBody());
+            //System.out.println(exchange.getRequestURI());
             OutputStream os = exchange.getResponseBody();
             String resource = exchange.getRequestURI().toString();
             if (exchange.getRequestMethod().equals("GET")) {
@@ -63,10 +63,14 @@ public class Server {
                 System.out.println(pairs.toString());
                 if (resource.equals("/submit")) {
                     String year = pairs.get("Year");
-                    System.out.println(year);
                     String quarter = pairs.get("Quarter");
-                    String[] courses = {pairs.get("CourseName")};
-                    String[] courseNums = {pairs.get("CourseID")};
+                    int numCourses = (pairs.size() / 2) - 1;
+                    String[] courses = new String[numCourses];
+                    String[] courseNums = new String[numCourses];
+                    for (int i = 0; i < numCourses; i++) {
+                        courses[i] = pairs.get("CourseName" + (i + 1));
+                        courseNums[i] = pairs.get("CourseID" + (i + 1));
+                    }
                     ScrapeThread t = new ScrapeThread(exchange, os, year, quarter, courses, courseNums);
                     new Thread(t).start();
                 }

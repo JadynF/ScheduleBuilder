@@ -94,7 +94,7 @@ public class Schedule {
         }
 
         // check for virtual
-        if (c.getModality().equals("Asynchronous Online")) {
+        if (c.getModality().equals("Asynchronous Online") || c.getModality().contains("Online")) {
             if (!this.virtual)
                 return false;
             else
@@ -156,6 +156,11 @@ public class Schedule {
         // check time compatability
         String cDays = c.getDays();
         for (int i = 0; i < schedule.size(); i++) { // loop through each course in current schedule
+
+            // if current schedule course is virtual continue
+            if (schedule.get(i).getModality().equals("Asynchronous Online")) 
+                continue;
+
             String sDays = schedule.get(i).getDays();
             if (sDays.contains("M") || sDays.contains("W") || sDays.contains("F"))
                 currMWF++;

@@ -6,31 +6,59 @@
     </head>
     <body>
         <div class="header">
-            <h1>Create Your Schedule!</h1>
+            <h1>Build Your Schedule!</h1>
         </div>
         <div class="formHead">
-            <h2>Enter Your Desired Courses</h2>
+            <h2>Enter Desired Courses</h2>
+            <p>
+                <b>NOTICE:</b> Schedule Builder availability and speed determined by 
+                <a href="https://boss.latech.edu/">B.O.S.S</a> status
+            </p>
         </div>
         <hr>
         <form method="post" action="/submit" class="form">
-            <div class="dates">
-                <p>
-                    <input type="number" id="Year" name="Year">
-                </p>
-                <p>
-                    <input type="text" id="Quarter" name="Quarter">
-                </p>
-            </div>
+            <h3>Enter Academic Term</h3>
+            <table class="datesTable">
+                <tr class="tableHeader">
+                    <td>
+                        Year
+                    </td>
+                    <td>
+                        Quarter
+                    </td>
+                </tr>
+                <tr class="tableInput">
+                    <td>
+                        <input type="number" id="Year" name="Year">
+                    </td>
+                    <td>
+                        <input type="text" id="Quarter" name="Quarter">
+                    </td>
+                </tr>
+            </table>
             <hr>
+            <h3>Enter Course(s)</h3>
+            <table class="courseInputTb" id="courseTb">
+                <tr class="tableHeader">
+                    <td>
+                        Department
+                    </td>
+                    <td>
+                        Course #
+                    </td>
+                </tr>
+                <tr class="tableInput">
+                    <td>
+                        <input type="text" id="CourseName1" name="CourseName1">
+                    </td>
+                    <td>
+                        <input type="text" id="CourseID1" name="CourseID1">
+                    </td>
+                </tr>
+            </table>
             <div class="changeCourses">
                 <button type="button" id="newCourseButton">Add Another Course</button>
                 <button type="button" id="deleteCourseButton">Delete Course</button>
-            </div>
-            <div class="courseInput" id="courseInput">
-                <p>
-                    <input type="text" id="CourseName1" name="CourseName1">
-                    <input type="text" id="CourseID1" name="CourseID1">
-                </p>
             </div>
             <hr>
             <input type="submit">

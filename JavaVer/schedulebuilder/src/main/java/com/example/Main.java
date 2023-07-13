@@ -3,24 +3,33 @@ import java.util.ArrayList;
 import java.io.*;
 
 public class Main {
+    //public static void main(String[] args) {
+    //    main();
+    //}
 
     public static void main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{
 
         ///////////////////////////////////////// BEGIN SCRAPE //////////////////////////////////////////////////
-
-        Scrape webScraper = new Scrape();
+        long start = System.nanoTime();
+        Scraper webScraper = new Scraper();
 
         ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>();
 
         for (int i = 0; i < courses.length; i++) {
             System.out.println(year + ":" + quarter + ":" + courses[i] + ":" + courseNums[i]);
-            coursesList.add(webScraper.getCourseData(year, quarter, courses[i], courseNums[i]));
+            coursesList.add(webScraper.scrape(year, quarter, courses[i], courseNums[i]));
         }
+
+        long end = System.nanoTime();
+        double timeElapsed = ((end - start) / 1000000000.0);
+        System.out.println(timeElapsed);
+
+        //webScraper.closeDriver();
 
         //coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "130"));
         //coursesList.add(webScraper.getCourseData("2023", "fall", "MATH", "240"));
         //coursesList.add(webScraper.getCourseData("2023", "fall", "ENGL", "101"));
-        webScraper.closeDriver();
+        //coursesList.add(webScraper.getCourseData("2023", "fall", "BISC", "130"));
 
         String[][] requiredCourses = null;//{{"HNRS", "100", "H03"}};
         String[][] requiredInstructor = null;//{{"ENGL101", "RUFLETH E"}};
