@@ -1,12 +1,9 @@
 package com.example;
 import java.util.ArrayList;
 import java.io.*;
+import org.json.JSONObject;
 
 public class Main {
-    //public static void main(String[] args) {
-    //    main();
-    //}
-
     public static void main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{
 
         ///////////////////////////////////////// BEGIN SCRAPE //////////////////////////////////////////////////
@@ -23,6 +20,11 @@ public class Main {
         long end = System.nanoTime();
         double timeElapsed = ((end - start) / 1000000000.0);
         System.out.println(timeElapsed);
+
+        String json = buildJson(coursesList);
+        BufferedWriter jsonWriter = new BufferedWriter(new FileWriter("courses.json"));
+        jsonWriter.write(json);
+        jsonWriter.close();
 
         //webScraper.closeDriver();
 
@@ -59,5 +61,37 @@ public class Main {
         html += "</body></html>";
         writer.write(html);
         writer.close();
+    }
+
+    public static String buildJson(ArrayList<ArrayList<Courses>> coursesList) {
+        JSONObject json = new JSONObject();
+        for (int i = 0; i < coursesList.size(); i++) {
+            JSONObject courseJson = new JSONObject();
+            json.put(coursesList.get(i).get(0).getSubject() + coursesList.get(i).get(0).getCourse(), courseJson);
+            for (int j = 0; j < coursesList.get(i).size(); j++) {
+                Courses course = coursesList.get(i).get(j);
+                courseJson.put(course.getSection(), new JSONObject()
+                    .put("callNum", course.getCallNum())
+                    .put("days", course.getDays())
+                    .put("startHour", course.getHourStart())
+                    .put("endHour", course.getHourEnd())
+                    .put("startMin", course.getMinuteStart())
+                    .put("endMin", course.getMinuteEnd())
+                    .put("modality", course.getModality())
+                    .put("name", course.getSubject() + course.getCourse())
+                    .put("open", course.getOpen())
+                    .put("openSeats", course.getOpenSeats())
+                    .put("maxSeats", course.getMaxSeats())
+                    .put("location", course.getLocation())
+                    .put("instructor", course.getInstructor())
+                    .put("restrictions", course.getRestrictions())
+                    .put("honors", course.isHonors())
+                    .put("cancelled", course.getCancelled())
+                    .put("section", course.getSection())
+                    .put("name", course.getSubject() + "-" + course.getCourse()));
+            }
+        }
+        String jsonString = json.toString();
+        return jsonString;
     }
 }

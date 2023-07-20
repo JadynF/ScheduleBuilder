@@ -18,10 +18,10 @@ public class Server {
 
     static class Handler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
-            //System.out.println(exchange.getRequestMethod());
-            //System.out.println(exchange.getRequestHeaders());
-            //System.out.println(exchange.getRequestBody());
-            //System.out.println(exchange.getRequestURI());
+            System.out.println(exchange.getRequestMethod());
+            System.out.println(exchange.getRequestHeaders());
+            System.out.println(exchange.getRequestBody());
+            System.out.println(exchange.getRequestURI());
             OutputStream os = exchange.getResponseBody();
             String resource = exchange.getRequestURI().toString();
             if (exchange.getRequestMethod().equals("GET")) {
@@ -44,6 +44,20 @@ public class Server {
                     exchange.sendResponseHeaders(200, 0);
                     os.write(js.readAllBytes());
                     js.close();
+                    os.close();
+                }
+                else if (resource.equals("/coursesscript.js")) {
+                    FileInputStream js = new FileInputStream("coursesscript.js");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(js.readAllBytes());
+                    js.close();
+                    os.close();
+                }
+                else if (resource.equals("/courses.json")) {
+                    FileInputStream json = new FileInputStream("courses.json");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(json.readAllBytes());
+                    json.close();
                     os.close();
                 }
             }

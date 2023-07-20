@@ -7,8 +7,8 @@ public class Courses {
     private String section;
     private String callNum;
     private Boolean open = false;
-    private String openSeats;
-    private String maxSeats;
+    private int openSeats;
+    private int maxSeats;
     private String modality;
     private String days;
     private String time;
@@ -54,8 +54,8 @@ public class Courses {
         else if (parsed[0].equals("Open")) {
             this.open = true;
             if (parsed.length == 5) {
-                this.openSeats = parsed[2];
-                this.maxSeats = parsed[4];
+                this.openSeats = Integer.parseInt(parsed[2]);
+                this.maxSeats = Integer.parseInt(parsed[4]);
             }
         }
     }
@@ -138,11 +138,11 @@ public class Courses {
         return this.open;
     }
     
-    public String getOpenSeats() {
+    public int getOpenSeats() {
         return this.openSeats;
     }
     
-    public String getMaxSeats() {
+    public int getMaxSeats() {
         return this.maxSeats;
     }
     
