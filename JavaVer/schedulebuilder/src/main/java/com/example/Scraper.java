@@ -28,10 +28,41 @@ public class Scraper {
         for (Element table : tables) { // go through each table
             if (table.hasClass("datadisplaytable")) { // check for correct table
                 Elements rows = table.select("tr"); // go through each row in table
+                Courses currCourse = null;
                 for (Element row : rows) {
+                    System.out.println(row);
+                    Boolean sameCourse = false;
+                    Elements rowHeaders = row.select("th");
+                    if (rowHeaders.size() > 0) {
+                        System.out.println(" BORDER ");
+                        currCourse = null;
+                        continue;
+                    }
                     Elements rowData = row.select("td");
-                    Courses currCourse = null;
+                    if (rowData.size() != 0) {
+                        if (rowData.get(0).hasAttr("colspan")) {
+                            //////////////////////////////////////////////////////
+                            // Add notes compatability
+                            //////////////////////////////////////////////////////
+                            System.out.println(" NOTES ");
+                            continue;
+                        }
+                        else if (currCourse != null) {
+                            sameCourse = true;
+                            System.out.println(" SAME COURSE ");
+                        }
+                    }
+                    else {
+                        continue;
+                    }
                     for (Element cellData : rowData) { // get each cell in row
+                        if (sameCourse) {
+                            if (cellData.attr("headers").equals("DaysTimeLocation")) {
+                                currCourse.setSetting(cellData.text());
+                                break;
+                            }
+                            continue;
+                        }
                         if (cellData.hasAttr("headers")) {
                             String headerValue = cellData.attr("headers"); // add attribute to object where necessary
                             if (headerValue.equals("CourseID")) {
@@ -51,8 +82,9 @@ public class Scraper {
                         }
                     }
                     // if object doesnt have adequate data, remove from list
-                    if (currCourse != null && (currCourse.getOpen() == false || (currCourse.getDays() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCallNum() == null || (currCourse.getTime() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCancelled())) {
+                    if (currCourse != null && (currCourse.getOpen() == false || (currCourse.getDays() == null && (currCourse.getModality().equals("Face to face") || currCourse.getModality().equals("Hybrid"))) || currCourse.getCallNum() == null || (currCourse.getTime() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCancelled())) {
                         courseList.remove(courseList.size() - 1);
+                        System.out.println("REMOVED");
                     }
                 }
             }

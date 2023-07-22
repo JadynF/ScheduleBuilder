@@ -47,8 +47,15 @@ function applyFilter() {
 function handleData(data) {
 
     json = data;
+    console.log(data);
 
     //console.log(data);
+    console.log(earliestHour);
+    console.log(latestHour);
+    console.log(maxTR);
+    console.log(maxMWF);
+    console.log(virtual);
+    console.log(honors);
     schedulesList = getSchedules(0, [], data, []);
     //for (i in schedulesList) {
     //    console.log("___________________________________")
@@ -90,10 +97,17 @@ function presentSchedules(schedulesList) {
             text = document.createTextNode(course["callNum"]);
             callData.appendChild(text);
 
-            time = getTime(course);
+            k = 0;
             timeData = document.createElement("td");
-            text = document.createTextNode(time);
-            timeData.appendChild(text);
+            while (k < course["numSettings"]) {
+                if (k != 0) {
+                    timeData.appendChild(document.createElement("br"));
+                }
+                time = getTime(course, k);
+                text = document.createTextNode(time);
+                timeData.appendChild(text);
+                k++;
+            }
 
             locationData = document.createElement("td");
             cModality = course["modality"];
@@ -148,40 +162,40 @@ function presentSchedules(schedulesList) {
     table.appendChild(tableDataBody);
 }
 
-function getTime(course) {
-    if (course["days"] === undefined || course["startHour"] === 0 || course["modality"] === "Asynchronous Online") {
+function getTime(course, num) {
+    if (course["days" + num] === undefined || course["startHour" + num] === 0 || course["modality" + num] === "Asynchronous Online") {
         return "No Time";
     }
 
-    time = course["days"] + " ";
+    time = course["days" + num] + " ";
     extraZero = "";
-    if (course["startMin"] === 0) {
+    if (course["startMin" + num] === 0) {
         extraZero = "0";
     }
 
-    if (course["startHour"] > 12) {
-        time += (course["startHour"] - 12) + ":" + course["startMin"] + extraZero + "PM - ";
+    if (course["startHour" + num] > 12) {
+        time += (course["startHour" + num] - 12) + ":" + course["startMin" + num] + extraZero + "PM - ";
     }
-    else if (course["startHour"] === 12) {
-        time += (course["startHour"]) + ":" + course["startMin"] + extraZero + "PM - ";
+    else if (course["startHour" + num] === 12) {
+        time += (course["startHour" + num]) + ":" + course["startMin" + num] + extraZero + "PM - ";
     }
     else {
-        time += (course["startHour"]) + ":" + course["startMin"] + extraZero + "AM - ";
+        time += (course["startHour" + num]) + ":" + course["startMin" + num] + extraZero + "AM - ";
     }
 
     extraZero = "";
-    if (course["endMin"] === 0) {
+    if (course["endMin" + num] === 0) {
         extraZero = "0";
     }
 
-    if (course["endHour"] > 12) {
-        time += (course["endHour"] - 12) + ":" + course["endMin"] + extraZero + "PM";
+    if (course["endHour" + num] > 12) {
+        time += (course["endHour" + num] - 12) + ":" + course["endMin" + num] + extraZero + "PM";
     }
-    else if (course["endHour"] === 12) {
-        time += (course["endHour"]) + ":" + course["endMin"] + extraZero + "PM";
+    else if (course["endHour" + num] === 12) {
+        time += (course["endHour" + num]) + ":" + course["endMin" + num] + extraZero + "PM";
     }
     else {
-        time += (course["endHour"]) + ":" + course["endMin"] + extraZero + "AM";
+        time += (course["endHour" + num]) + ":" + course["endMin" + num] + extraZero + "AM";
     }
 
     return time;
@@ -230,6 +244,7 @@ function compatable(course, schedule) {
 
     if (!honors) {
         if (course["honors"]) {
+            console.log("1");
             return false;
         }
     }
@@ -239,21 +254,31 @@ function compatable(course, schedule) {
             return true;
         }
         else {
+            console.log("2");
             return false;
         }
     }
 
-    if (course["startHour"] < earliestHour) {
-        return false;
+    i = 0;
+    while (i < course["numSettings"]) {
+        if (course["startHour" + i] < earliestHour) {
+            console.log("3");
+            return false;
+        }
+        i++;
     }
 
-    console.log(latestHour);
-    console.log(course["endHour"]);
-    if (latestHour != -1 && course["endHour"] > latestHour) {
-        return false;
+    i = 0;
+    while (i < course["numSettings"]) {
+        if (latestHour != -1 && course["endHour" + i] > latestHour) {
+            console.log("4");
+            return false;
+        }
+        i++;
     }
 
     if (!isRequiredSetting(course, schedule)) {
+        console.log("5");
         return false;
     }
 
@@ -284,52 +309,61 @@ function isRequiredSetting(course, schedule) {
     currMWF = 0;
     currTR = 0;
 
-    cDays = course["days"];
-    for (i in schedule) {
+    cNumSet = 0;
+    while (cNumSet < course["numSettings"]) {
+        cDays = course["days" + cNumSet];
+        for (i in schedule) {
 
-        if (schedule[i]["modality"] === "Asynchronous Online") {
-            continue;
-        }
-
-        sDays = schedule[i]["days"];
-        if (sDays.includes("M") || sDays.includes("W") || sDays.includes("F")) {
-            currMWF++;
-        }
-        else if (sDays.includes("T") || sDays.contains("R")) {
-            currTR++;
-        }
-        shareDays = false;
-        for (j in cDays) {
-            for (k in sDays) {
-                if (cDays[j] === sDays[k]) {
-                    shareDays = true;
+            if (schedule[i]["modality"].includes("Online")) {
+                continue;
+            }
+    
+            sNumSet = 0;
+            while (sNumSet < schedule[i]["numSettings"]) {
+                sDays = schedule[i]["days" + sNumSet];
+                if (sDays.includes("M") || sDays.includes("W") || sDays.includes("F")) {
+                    currMWF++;
                 }
+                else if (sDays.includes("T") || sDays.contains("R")) {
+                    currTR++;
+                }
+                shareDays = false;
+                for (j in cDays) {
+                    for (k in sDays) {
+                        if (cDays[j] === sDays[k]) {
+                            shareDays = true;
+                        }
+                    }
+                }
+    
+                if (shareDays) {
+                    if (course["startHour" + cNumSet] > schedule[i]["startHour" + sNumSet] && course["startHour" + cNumSet] <= schedule[i]["endHour" + sNumSet]) {
+                        //console.log(1);
+                        if (course["startHour" + cNumSet] === schedule[i]["endHour" + sNumSet] && course["startMin" + cNumSet] > schedule[i]["endMin" + sNumSet]) {
+                            //console.log(2);
+                            continue;
+                        }
+                        return false;
+                    }
+                    else if (schedule[i]["startHour" + sNumSet] > course["startHour" + cNumSet] && schedule[i]["startHour" + sNumSet] <= course["endHour" + cNumSet]) {
+                        //console.log(3);
+                        if (schedule[i]["startHour" + sNumSet] === course["endHour" + cNumSet] && course["endMin" + cNumSet] < schedule[i]["startMin" + sNumSet]) {
+                            //console.log(4);
+                            continue;
+                        }
+                        return false;
+                    }
+                    else if (course["startHour" + cNumSet] === schedule[i]["startHour" + sNumSet]) {
+                        //console.log(5);
+                        return false;
+                    }
+                }
+                sNumSet++;
             }
         }
-
-        if (shareDays) {
-            if (course["startHour"] > schedule[i]["startHour"] && course["startHour"] <= schedule[i]["endHour"]) {
-                //console.log(1);
-                if (course["startHour"] === schedule[i]["endHour"] && course["startMin"] > schedule[i]["endMin"]) {
-                    //console.log(2);
-                    continue;
-                }
-                return false;
-            }
-            else if (schedule[i]["startHour"] > course["startHour"] && schedule[i]["startHour"] <= course["endHour"]) {
-                //console.log(3);
-                if (schedule[i]["startHour"] === course["endHour"] && course["endMin"] < schedule[i]["startMin"]) {
-                    //console.log(4);
-                    continue;
-                }
-                return false;
-            }
-            else if (course["startHour"] === schedule[i]["startHour"]) {
-                //console.log(5);
-                return false;
-            }
-        }
+        cNumSet++;
     }
+    
     if (maxMWF != -1) {
         if ((cDays.includes("M") || cDays.includes("W") || cDays.includes("F")) && (currMWF >= maxMWF)) {
             return false;

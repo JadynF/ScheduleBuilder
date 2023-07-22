@@ -1,4 +1,5 @@
 package com.example;
+import java.util.ArrayList;
 
 public class Courses {
     
@@ -10,12 +11,13 @@ public class Courses {
     private int openSeats;
     private int maxSeats;
     private String modality;
-    private String days;
-    private String time;
-    private int hourStart;
-    private int minuteStart;
-    private int hourEnd;
-    private int minuteEnd;
+    private ArrayList<String> days = new ArrayList<String>();
+    private ArrayList<String> time = new ArrayList<String>();
+    private ArrayList<Integer> hourStart = new ArrayList<Integer>();
+    private ArrayList<Integer> minuteStart = new ArrayList<Integer>();
+    private ArrayList<Integer> hourEnd = new ArrayList<Integer>();
+    private ArrayList<Integer> minuteEnd = new ArrayList<Integer>();
+    private int numTimes = 0;
     private String location;
     private String instructor;
     private String restrictions;
@@ -69,6 +71,9 @@ public class Courses {
     }
 
     public void setSetting(String setting) {
+
+        System.out.println(setting);
+
         if (setting.equals("Main Campus")) {
             this.location = "Main Campus";
             return;
@@ -83,17 +88,17 @@ public class Courses {
         }
 
         String[] parsed = setting.split("\\s+");
-        this.days = parsed[0];
-        this.time = parsed[1];
+        this.days.add(parsed[0]);
+        this.time.add(parsed[1]);
 
-        this.hourStart = Integer.valueOf(parsed[1].substring(0,2));
-        if (hourStart < 8)
-            hourStart += 12;
-        this.minuteStart = Integer.valueOf(parsed[1].substring(3,5));
-        this.hourEnd = Integer.valueOf(parsed[1].substring(6,8));
-        if (hourEnd < 8)
-            hourEnd += 12;
-        this.minuteEnd = Integer.valueOf(parsed[1].substring(9,11));
+        this.hourStart.add(Integer.valueOf(parsed[1].substring(0,2)));
+        if (this.hourStart.get(this.numTimes) < 8)
+            this.hourStart.set(this.numTimes, this.hourStart.get(this.numTimes) + 12);
+        this.minuteStart.add(Integer.valueOf(parsed[1].substring(3,5)));
+        this.hourEnd.add(Integer.valueOf(parsed[1].substring(6,8)));
+        if (this.hourEnd.get(this.numTimes) < 8)
+            this.hourEnd.set(this.numTimes, this.hourEnd.get(this.numTimes) + 12);
+        this.minuteEnd.add(Integer.valueOf(parsed[1].substring(9,11)));
 
         this.location = parsed[2] + " ";
         int i = 3;
@@ -101,6 +106,7 @@ public class Courses {
             this.location += parsed[i] + " ";
             i++;
         }
+        this.numTimes++;
     }
 
     public void setInstructor(String ins) {
@@ -120,6 +126,10 @@ public class Courses {
 
     public String getCourse() {
         return this.course;
+    }
+
+    public int getNumTimes() {
+        return this.numTimes;
     }
 
     public String getSubject() {
@@ -150,27 +160,27 @@ public class Courses {
         return this.modality;
     }
     
-    public String getDays() {
+    public ArrayList<String> getDays() {
         return this.days;
     }
     
-    public String getTime() {
+    public ArrayList<String> getTime() {
         return this.time;
     }
     
-    public int getHourStart() {
+    public ArrayList<Integer> getHourStart() {
         return this.hourStart;
     }
     
-    public int getMinuteStart() {
+    public ArrayList<Integer> getMinuteStart() {
         return this.minuteStart;
     }
     
-    public int getHourEnd() {
+    public ArrayList<Integer> getHourEnd() {
         return this.hourEnd;
     }
     
-    public int getMinuteEnd() {
+    public ArrayList<Integer> getMinuteEnd() {
         return this.minuteEnd;
     }
     
@@ -228,9 +238,11 @@ public class Courses {
             result += this.openSeats + "/" + this.maxSeats + " seats are open\n";
         }
         result += "Modality: " + this.modality + "\n";
-        result += "Days: " + this.days + "\n";
-        result += "Time: " + this.time + "\n";
-        result += this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd + "\n";
+        for (int i = 0; i < this.numTimes; i++) {
+            result += "Days: " + this.days.get(i) + "\n";
+            result += "Time: " + this.time.get(i) + "\n";
+            result += this.hourStart.get(i) + " " + this.minuteStart.get(i) + " " + this.hourEnd.get(i) + " " + this.minuteEnd.get(i) + "\n";
+        }
         result += "Location: " + this.location + "\n";
         result += "Instructor: " + this.instructor + "\n";
         if (!this.restrictions.equals("")) {
