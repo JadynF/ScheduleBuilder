@@ -30,33 +30,29 @@ public class Scraper {
                 Elements rows = table.select("tr"); // go through each row in table
                 Courses currCourse = null;
                 for (Element row : rows) {
-                    System.out.println(row);
-                    Boolean sameCourse = false;
+                    Boolean sameCourse = false; // keeps check for notes and different times for same course
                     Elements rowHeaders = row.select("th");
-                    if (rowHeaders.size() > 0) {
-                        System.out.println(" BORDER ");
+                    if (rowHeaders.size() > 0) { // if header is present, then new class
                         currCourse = null;
                         continue;
                     }
                     Elements rowData = row.select("td");
                     if (rowData.size() != 0) {
-                        if (rowData.get(0).hasAttr("colspan")) {
+                        if (rowData.get(0).hasAttr("colspan")) { // if colspan attribute is present, then it is course notes
                             //////////////////////////////////////////////////////
                             // Add notes compatability
                             //////////////////////////////////////////////////////
-                            System.out.println(" NOTES ");
                             continue;
                         }
-                        else if (currCourse != null) {
+                        else if (currCourse != null) { // is same course, and current row will contain more information on other times
                             sameCourse = true;
-                            System.out.println(" SAME COURSE ");
                         }
                     }
                     else {
                         continue;
                     }
                     for (Element cellData : rowData) { // get each cell in row
-                        if (sameCourse) {
+                        if (sameCourse) { // if same course add separate time
                             if (cellData.attr("headers").equals("DaysTimeLocation")) {
                                 currCourse.setSetting(cellData.text());
                                 break;
@@ -82,9 +78,8 @@ public class Scraper {
                         }
                     }
                     // if object doesnt have adequate data, remove from list
-                    if (currCourse != null && (currCourse.getOpen() == false || (currCourse.getDays() == null && (currCourse.getModality().equals("Face to face") || currCourse.getModality().equals("Hybrid"))) || currCourse.getCallNum() == null || (currCourse.getTime() == null && (!currCourse.getModality().equals("Asynchronous Online"))) || currCourse.getCancelled())) {
+                    if (currCourse != null && (currCourse.getOpen() == false || currCourse.getCallNum() == null || currCourse.getCancelled())) {
                         courseList.remove(courseList.size() - 1);
-                        System.out.println("REMOVED");
                     }
                 }
             }
@@ -97,7 +92,6 @@ public class Scraper {
             // get main BOSS page
             HttpGet request = new HttpGet("https://boss.latech.edu/ia-bin/tsrvweb.cgi?&WID=W&tserve_tip_write=%7C%7CWID&ConfigName=rcrssecthp1&ReqNum=1&TransactionSource=H&tserve_trans_config=rcrssecthp1.cfg&tserve_host_code=HostZero&tserve_tiphost_code=TipZero");
             CloseableHttpResponse getResponse = httpClient.execute(request);
-            //System.out.println(EntityUtils.toString(getResponse.getEntity()));
             getResponse.close();
 
             String postUrl = "https://boss.latech.edu/ia-bin/tsrvweb.cgi";
@@ -118,7 +112,7 @@ public class Scraper {
             else
                 return null;
 
-            HttpPost postTerms = new HttpPost(postUrl);
+            HttpPost postTerms = new HttpPost(postUrl); // post request to send academic terms
             List<NameValuePair> urlTermParams = new ArrayList<>(); // add POST payload
             urlTermParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
             urlTermParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
@@ -129,12 +123,11 @@ public class Scraper {
             urlTermParams.add(new BasicNameValuePair("Term", term));
             postTerms.setEntity(new UrlEncodedFormEntity(urlTermParams));
             CloseableHttpResponse termResponse = httpClient.execute(postTerms); // send POST request
-            //System.out.println(EntityUtils.toString(termResponse.getEntity()));
             termResponse.close();
 
             subject = subject.toUpperCase();
 
-            HttpPost postSubject = new HttpPost(postUrl);
+            HttpPost postSubject = new HttpPost(postUrl); // post request to send subject
             List<NameValuePair> urlSubjectParams = new ArrayList<>();
             urlSubjectParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
             urlSubjectParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
@@ -146,7 +139,6 @@ public class Scraper {
             urlSubjectParams.add(new BasicNameValuePair("Subject", subject));
             postSubject.setEntity(new UrlEncodedFormEntity(urlSubjectParams));
             CloseableHttpResponse subjectResponse = httpClient.execute(postSubject);
-            //System.out.println(EntityUtils.toString(subjectResponse.getEntity()));
             subjectResponse.close();
 
             // create course id value for payload
@@ -156,7 +148,7 @@ public class Scraper {
             else
                 courseID = subject + "-" + cNum;
 
-            HttpPost postSection = new HttpPost(postUrl);
+            HttpPost postSection = new HttpPost(postUrl); // post request to send section
             List<NameValuePair> urlSectionParams = new ArrayList<>();
             urlSectionParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
             urlSectionParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
@@ -177,75 +169,4 @@ public class Scraper {
             return null;
         }
     }
-
-    //public static void main( String[] args ) {
-    //    ArrayList<Courses> courseList = scrape("2023", "fall", "CSC", "130");
-//
-    //    for (Courses c : courseList) {
-    //        System.out.println(c.toString());
-    //    }
-    //}
-//
-    //    try {
-    //        HttpGet request = new HttpGet("https://boss.latech.edu/ia-bin/tsrvweb.cgi?&WID=W&tserve_tip_write=%7C%7CWID&ConfigName=rcrssecthp1&ReqNum=1&TransactionSource=H&tserve_trans_config=rcrssecthp1.cfg&tserve_host_code=HostZero&tserve_tiphost_code=TipZero");
-    //        CloseableHttpResponse getResponse = httpClient.execute(request);
-    //        //System.out.println(EntityUtils.toString(getResponse.getEntity()));
-    //        getResponse.close();
-//
-    //        String postUrl = "https://boss.latech.edu/ia-bin/tsrvweb.cgi";
-//
-    //        HttpPost postTerms = new HttpPost(postUrl);
-    //        List<NameValuePair> urlTermParams = new ArrayList<>();
-    //        urlTermParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
-    //        urlTermParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
-    //        urlTermParams.add(new BasicNameValuePair("tserve_tiphost_code", "TipZero"));
-    //        urlTermParams.add(new BasicNameValuePair("tserve_trans_config", "RCRSSECTHP1.cfg"));
-    //        urlTermParams.add(new BasicNameValuePair("tserve_tip_write", "||WID|SID|PIN|Term|Subject|CourseID|AppTerm|ConfigName"));
-    //        urlTermParams.add(new BasicNameValuePair("TransactionSource", "H"));
-    //        urlTermParams.add(new BasicNameValuePair("Term", "20241"));
-    //        postTerms.setEntity(new UrlEncodedFormEntity(urlTermParams));
-    //        CloseableHttpResponse termResponse = httpClient.execute(postTerms);
-    //        //System.out.println(EntityUtils.toString(termResponse.getEntity()));
-    //        termResponse.close();
-//
-    //        HttpPost postSubject = new HttpPost(postUrl);
-    //        List<NameValuePair> urlSubjectParams = new ArrayList<>();
-    //        urlSubjectParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
-    //        urlSubjectParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
-    //        urlSubjectParams.add(new BasicNameValuePair("tserve_tiphost_code", "TipZero"));
-    //        urlSubjectParams.add(new BasicNameValuePair("tserve_trans_config", "rcrssecthp2.cfg"));
-    //        urlSubjectParams.add(new BasicNameValuePair("tserve_tip_write", "||WID|SID|PIN|Term|Subject|CourseID|AppTerm|ConfigName"));
-    //        urlSubjectParams.add(new BasicNameValuePair("TransactionSource", "H"));
-    //        urlSubjectParams.add(new BasicNameValuePair("ReqNum", "2"));
-    //        urlSubjectParams.add(new BasicNameValuePair("Subject", "ENGL"));
-    //        postSubject.setEntity(new UrlEncodedFormEntity(urlSubjectParams));
-    //        CloseableHttpResponse subjectResponse = httpClient.execute(postSubject);
-    //        //System.out.println(EntityUtils.toString(subjectResponse.getEntity()));
-    //        subjectResponse.close();
-//
-    //        HttpPost postSection = new HttpPost(postUrl);
-    //        //postSection.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-    //        //postSection.addHeader("Accept-Encoding", "gzip, deflate, br");
-    //        //postSection.addHeader("Cache-Control", "max-age=0");
-    //        //postSection.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    //        //postSection.addHeader("Referer", "https://boss.latech.edu/ia-bin/tsrvweb.cgi");
-    //        //postSection.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
-    //        List<NameValuePair> urlSectionParams = new ArrayList<>();
-    //        urlSectionParams.add(new BasicNameValuePair("tserve_tip_read_destroy", ""));
-    //        urlSectionParams.add(new BasicNameValuePair("tserve_host_code", "HostZero"));
-    //        urlSectionParams.add(new BasicNameValuePair("tserve_tiphost_code", "TipZero"));
-    //        urlSectionParams.add(new BasicNameValuePair("tserve_trans_config", "rcrssecthp3.cfg"));
-    //        urlSectionParams.add(new BasicNameValuePair("tserve_tip_write", "||WID|SID|PIN|Term|Subject|CourseID|AppTerm|ConfigName"));
-    //        urlSectionParams.add(new BasicNameValuePair("TransactionSource", "H"));
-    //        urlSectionParams.add(new BasicNameValuePair("ReqNum", "3"));
-    //        urlSectionParams.add(new BasicNameValuePair("CourseID", "ENGL-101"));
-    //        postSection.setEntity(new UrlEncodedFormEntity(urlSectionParams));
-    //        CloseableHttpResponse sectionResponse = httpClient.execute(postSection);
-    //        System.out.println(EntityUtils.toString(sectionResponse.getEntity()));
-    //        sectionResponse.close();
-    //    }
-    //    catch (Exception e) {
-    //        System.out.println(e);
-    //    }
-    //}
 }

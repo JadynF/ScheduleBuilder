@@ -26,7 +26,6 @@ public class Courses {
 
     public Courses(String sec) {
         this.section = setSection(sec);
-
     }
 
     ////////////////////////////////////////// SETTERS ////////////////////////////////////////////////
@@ -71,8 +70,6 @@ public class Courses {
     }
 
     public void setSetting(String setting) {
-
-        System.out.println(setting);
 
         if (setting.equals("Main Campus")) {
             this.location = "Main Campus";
@@ -206,27 +203,6 @@ public class Courses {
 
     /////////////////////////////////////////////////////////////////////////////////
 
-    public void print() {
-        if (this.cancelled) {
-            System.out.println("CANCELLED");
-            return;
-        }
-        System.out.println("Course: " + this.subject + " " + this.course + " " + this.section);
-        System.out.println("Call number: " + this.callNum);
-        if (this.open) {
-            System.out.println(this.openSeats + "/" + this.maxSeats + " seats are open");
-        }
-        System.out.println("Modality: " + this.modality);
-        System.out.println("Days: " + this.days);
-        System.out.println("Time: " + this.time);
-        System.out.println(this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd);
-        System.out.println("Location: " + this.location);
-        System.out.println("Instructor: " + this.instructor);
-        if (!this.restrictions.equals("")) {
-            System.out.println("Restrictions: " + this.restrictions);
-        }
-    }
-
     public String toString() {
         String result = "";
         if (this.cancelled) {
@@ -247,28 +223,6 @@ public class Courses {
         result += "Instructor: " + this.instructor + "\n";
         if (!this.restrictions.equals("")) {
             result += "Restrictions: " + this.restrictions + "\n";
-        }
-        return result;
-    }
-
-    public String toHTML() {
-        String result = "";
-        if (this.cancelled) {
-            return "<p>CANCELLED</p>";
-        }
-        result += "<p>Course: " + this.subject + " " + this.course + " " + this.section + "</p>";
-        result += "<p>Call number: " + this.callNum + "</p>";
-        if (this.open) {
-            result += "<p>" + this.openSeats + "/" + this.maxSeats + " seats are open</p>";
-        }
-        result += "<p>Modality: " + this.modality + "</p>";
-        result += "<p>Days: " + this.days + "</p>";
-        result += "<p>Time: " + this.time + "</p>";
-        result += "<p>" + this.hourStart + " " + this.minuteStart + " " + this.hourEnd + " " + this.minuteEnd + "</p>";
-        result += "<p>Location: " + this.location + "</p>";
-        result += "<p>Instructor: " + this.instructor + "</p>";
-        if (!this.restrictions.equals("")) {
-            result += "<p>Restrictions: " + this.restrictions + "</p>";
         }
         return result;
     }

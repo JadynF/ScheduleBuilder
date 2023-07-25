@@ -48,14 +48,6 @@ function handleData(data) {
 
     json = data;
     console.log(data);
-
-    //console.log(data);
-    console.log(earliestHour);
-    console.log(latestHour);
-    console.log(maxTR);
-    console.log(maxMWF);
-    console.log(virtual);
-    console.log(honors);
     schedulesList = getSchedules(0, [], data, []);
     //for (i in schedulesList) {
     //    console.log("___________________________________")
@@ -163,9 +155,6 @@ function presentSchedules(schedulesList) {
 }
 
 function getTime(course, num) {
-    if (course["days" + num] === undefined || course["startHour" + num] === 0 || course["modality" + num] === "Asynchronous Online") {
-        return "No Time";
-    }
 
     time = course["days" + num] + " ";
     extraZero = "";
@@ -244,7 +233,7 @@ function compatable(course, schedule) {
 
     if (!honors) {
         if (course["honors"]) {
-            console.log("1");
+            //console.log("1");
             return false;
         }
     }
@@ -254,7 +243,7 @@ function compatable(course, schedule) {
             return true;
         }
         else {
-            console.log("2");
+            //console.log("2");
             return false;
         }
     }
@@ -262,7 +251,7 @@ function compatable(course, schedule) {
     i = 0;
     while (i < course["numSettings"]) {
         if (course["startHour" + i] < earliestHour) {
-            console.log("3");
+            //console.log("3");
             return false;
         }
         i++;
@@ -271,14 +260,14 @@ function compatable(course, schedule) {
     i = 0;
     while (i < course["numSettings"]) {
         if (latestHour != -1 && course["endHour" + i] > latestHour) {
-            console.log("4");
+            //console.log("4");
             return false;
         }
         i++;
     }
 
     if (!isRequiredSetting(course, schedule)) {
-        console.log("5");
+        //console.log("5");
         return false;
     }
 
@@ -310,8 +299,15 @@ function isRequiredSetting(course, schedule) {
     currTR = 0;
 
     cNumSet = 0;
+    cDays = "";
+
     while (cNumSet < course["numSettings"]) {
         cDays = course["days" + cNumSet];
+        if (cDays === "") {
+            console.log("empty");
+            return true;
+        }
+
         for (i in schedule) {
 
             if (schedule[i]["modality"].includes("Online")) {
@@ -321,6 +317,10 @@ function isRequiredSetting(course, schedule) {
             sNumSet = 0;
             while (sNumSet < schedule[i]["numSettings"]) {
                 sDays = schedule[i]["days" + sNumSet];
+                if (sDays === undefined) {
+                    break;
+                }
+
                 if (sDays.includes("M") || sDays.includes("W") || sDays.includes("F")) {
                     currMWF++;
                 }

@@ -21,10 +21,10 @@ public class ScrapeThread implements Runnable{
         this.courseNums = courseNums;
     }
 
-    public void run() {
+    public void run() { 
         try {
-            Main.main(year, quarter, courses, courseNums);
-            FileInputStream html = new FileInputStream("CoursesPage.html");
+            Main.main(year, quarter, courses, courseNums); // scrape and get JSON
+            FileInputStream html = new FileInputStream("CoursesPage.html"); // send reponse
             ex.sendResponseHeaders(200, 0);
             os.write(html.readAllBytes());
             html.close();

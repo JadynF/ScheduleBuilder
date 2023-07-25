@@ -4,84 +4,37 @@ import java.io.*;
 import org.json.JSONObject;
 
 public class Main {
-    public static void main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{
+    public static void main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{ // take desired courses, scrape data, and create JSON file with data
 
-        ///////////////////////////////////////// BEGIN SCRAPE //////////////////////////////////////////////////
         long start = System.nanoTime();
         Scraper webScraper = new Scraper();
 
-        ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>();
+        ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>(); // 2d array of every course being offered
 
         for (int i = 0; i < courses.length; i++) {
-            System.out.println(year + ":" + quarter + ":" + courses[i] + ":" + courseNums[i]);
             coursesList.add(webScraper.scrape(year, quarter, courses[i], courseNums[i]));
-        }
-
-        for (ArrayList<Courses> cl : coursesList) {
-            for (Courses c : cl) {
-                System.out.println(c);
-            }
         }
 
         long end = System.nanoTime();
         double timeElapsed = ((end - start) / 1000000000.0);
-        System.out.println(timeElapsed);
+        System.out.println(timeElapsed + " seconds taken");
 
         String json = buildJson(coursesList);
         BufferedWriter jsonWriter = new BufferedWriter(new FileWriter("courses.json"));
         jsonWriter.write(json);
         jsonWriter.close();
-
-        System.out.println("Ahahhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-
-        //webScraper.closeDriver();
-
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "CSC", "130"));
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "MATH", "240"));
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "ENGL", "101"));
-        //coursesList.add(webScraper.getCourseData("2023", "fall", "BISC", "130"));
-
-        //String[][] requiredCourses = null;//{{"HNRS", "100", "H03"}};
-        //String[][] requiredInstructor = null;//{{"ENGL101", "RUFLETH E"}};
-        //String[][] prohibitedInstructor = null;//{{"CSC130", "CHERRY K"}};
-//
-        //Schedule scheduleObject = new Schedule(8, -1, -1, -1, requiredCourses, requiredInstructor, prohibitedInstructor, true, true);
-        //scheduleObject.calculateSchedules(0, new ArrayList<Courses>(), coursesList);
-        //ArrayList<ArrayList<Courses>> schedules = scheduleObject.getSchedules();
-//
-        //BufferedWriter writer = new BufferedWriter(new FileWriter("courses.html"));
-        //String html = "<!DOCTYPE html><html><body>";
-//
-        //int i = 0;
-        //for (ArrayList<Courses> cL : schedules) {
-        //    ++i;
-        //    html += "<h1>Shedule " + i + "</h1>";
-        //    html += "<h2>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h2>";
-        //    System.out.println("Schedule " + i);
-        //    System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-        //    for (Courses c : cL) {
-        //        //c.print();
-        //        html += c.toHTML();
-        //        html += "<h2>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</h2>";
-        //        System.out.println(c);
-        //        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-        //    }
-        //}
-        //html += "</body></html>";
-        //writer.write(html);
-        //writer.close();
     }
 
-    public static String buildJson(ArrayList<ArrayList<Courses>> coursesList) {
+    public static String buildJson(ArrayList<ArrayList<Courses>> coursesList) { // function that takes 2d array of courses being offered, and returns those courses as a JSON object
 
         JSONObject json = new JSONObject();
         for (int i = 0; i < coursesList.size(); i++) {
-            if (coursesList.get(i).size() == 0) {
-                return json.toString();
+            if (coursesList.get(i).size() == 0) { // if no offerings for course
+                return "";
             }
-            JSONObject coursesJson = new JSONObject();
+            JSONObject coursesJson = new JSONObject(); // new object for each individual course
             json.put(coursesList.get(i).get(0).getSubject() + coursesList.get(i).get(0).getCourse(), coursesJson);
-            for (int j = 0; j < coursesList.get(i).size(); j++) {
+            for (int j = 0; j < coursesList.get(i).size(); j++) { // add key and values to new course object
                 Courses course = coursesList.get(i).get(j);
                 JSONObject courseJson = new JSONObject()
                     .put("callNum", course.getCallNum())
@@ -98,7 +51,7 @@ public class Main {
                     .put("section", course.getSection())
                     .put("name", course.getSubject() + "-" + course.getCourse())
                     .put("numSettings", course.getNumTimes());
-                for (int k = 0; k < course.getNumTimes(); k++) {
+                for (int k = 0; k < course.getNumTimes(); k++) { // put every offering time in object
                     courseJson.put("days" + k, course.getDays().get(k));
                     courseJson.put("startHour" + k, course.getHourStart().get(k));
                     courseJson.put("endHour" + k, course.getHourEnd().get(k));
