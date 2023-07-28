@@ -10,7 +10,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 public class Server {
     public static void main(String[] args) throws Exception {
-        HttpServer sv = HttpServer.create(new InetSocketAddress(8080), 0); // create server
+        HttpServer sv = HttpServer.create(new InetSocketAddress(8080), 50); // create server
         sv.createContext("/", new Handler()); // set context handler
         sv.setExecutor(null);
         sv.start();
@@ -57,6 +57,9 @@ public class Server {
                 while ((bytes = in.read()) != -1) { // get each character in bytes
                     data += (char) bytes;
                 }
+
+                System.out.println(data);
+
                 String[] q = data.split("&");
                 Map<String, String> pairs = new HashMap<String, String>();
                 for (String query : q) { // map each key value in payload
@@ -70,8 +73,8 @@ public class Server {
                     String[] courses = new String[numCourses];
                     String[] courseNums = new String[numCourses];
                     for (int i = 0; i < numCourses; i++) { // get each course and course number
-                        courses[i] = pairs.get("CourseName" + (i + 1));
-                        courseNums[i] = pairs.get("CourseID" + (i + 1));
+                        courses[i] = pairs.get("CourseName" + (i + 1)).replaceAll("\\+", "");
+                        courseNums[i] = pairs.get("CourseID" + (i + 1)).replaceAll("\\+", "");
                     }
                     ScrapeThread t = new ScrapeThread(exchange, os, year, quarter, courses, courseNums); // start new thread to scrape data and send response back
                     new Thread(t).start();

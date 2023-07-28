@@ -13,16 +13,19 @@
                 <table class="filterTb" id="filterTb" style="margin-left:auto;margin-right:auto;border-spacing:5px">
                     <tr>
                         <td>
-                            Earliest Hour
+                            Earliest Time
                         </td>
                         <td>
-                            Latest Hour
+                            Latest Time
                         </td>
                         <td>
                             Max MWF Classes
                         </td>
                         <td>
                             Max TR Classes
+                        </td>
+                        <td>
+                            Min Open Seats
                         </td>
                         <td>
                             Allow Virtual
@@ -33,16 +36,19 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="number" id="earliestHour">
+                            <input type="time" id="earliestHour" min="08" max="20" title="Earliest allowed class time">
                         </td>
                         <td>
-                            <input type="number" id="latestHour">
+                            <input type="time" id="latestHour" min="08" max="20" title="Latest allowed class time">
                         </td>
                         <td>
-                            <input type="number" id="maxMWF">
+                            <input type="number" id="maxMWF" title="Max amount of classes on MWF">
                         </td>
                         <td>
-                            <input type="number" id="maxTR">
+                            <input type="number" id="maxTR" title="Max amount of classes on TR">
+                        </td>
+                        <td>
+                            <input type="number" id="minSeats" title="Min amount of open seats allowed">
                         </td>
                         <td>
                             <input type="checkbox" id="allowVirtual" checked="true">

@@ -16,7 +16,7 @@
             </p>
         </div>
         <hr>
-        <form method="post" action="/submit" class="form">
+        <form method="post" action="/submit" class="form" >
             <h3>Enter Academic Term</h3>
             <table class="datesTable">
                 <tr class="tableHeader">
@@ -29,10 +29,15 @@
                 </tr>
                 <tr class="tableInput">
                     <td>
-                        <input type="number" id="Year" name="Year">
+                        <input type="number" id="Year" name="Year" required>
                     </td>
                     <td>
-                        <input type="text" id="Quarter" name="Quarter">
+                        <select name="Quarter" id="Quarter" required>
+                            <option value="winter">Winter</option>
+                            <option value="spring">Spring</option>
+                            <option value="summer">Summer</option>
+                            <option value="fall">Fall</option>
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -49,10 +54,10 @@
                 </tr>
                 <tr class="tableInput">
                     <td>
-                        <input type="text" id="CourseName1" name="CourseName1">
+                        <input type="text" id="CourseName1" name="CourseName1" placeholder="Ex: CSC" required>
                     </td>
                     <td>
-                        <input type="text" id="CourseID1" name="CourseID1">
+                        <input type="text" id="CourseID1" name="CourseID1" placeholder="Ex: 130" required>
                     </td>
                 </tr>
             </table>
