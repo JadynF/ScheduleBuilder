@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Home Page</title>
+        <title>Build Your Schedule</title>
         <script src="homescript.js" defer></script>
+        <link rel="stylesheet" href="homestyle.css">
     </head>
     <body>
         <div class="header">
             <h1>Build Your Schedule!</h1>
         </div>
         <div class="formHead">
-            <h2>Enter Desired Courses</h2>
             <p>
                 <b>NOTICE:</b> Schedule Builder availability and speed determined by 
                 <a href="https://boss.latech.edu/">B.O.S.S</a> status
             </p>
         </div>
         <hr>
-        <form method="post" action="/submit" class="form" >
-            <h3>Enter Academic Term</h3>
+        <form method="post" action="/submit">
+            <h2>Enter Academic Term</h2>
             <table class="datesTable">
                 <tr class="tableHeader">
                     <td>
-                        Year
+                        <h3>Year</h3>
                     </td>
                     <td>
-                        Quarter
+                        <h3>Quarter</h3>
                     </td>
                 </tr>
                 <tr class="tableInput">
@@ -41,15 +41,14 @@
                     </td>
                 </tr>
             </table>
-            <hr>
-            <h3>Enter Course(s)</h3>
+            <h2>Enter Course(s)</h2>
             <table class="courseInputTb" id="courseTb">
                 <tr class="tableHeader">
                     <td>
-                        Department
+                        <h3>Subject</h3>
                     </td>
                     <td>
-                        Course #
+                        <h3>Course #</h3>
                     </td>
                 </tr>
                 <tr class="tableInput">
@@ -62,11 +61,13 @@
                 </tr>
             </table>
             <div class="changeCourses">
-                <button type="button" id="newCourseButton">Add Another Course</button>
+                <button type="button" id="newCourseButton">Add Course</button>
                 <button type="button" id="deleteCourseButton">Delete Course</button>
             </div>
-            <hr>
-            <input type="submit">
+            <br>
+            <div class="submit">
+                <input type="submit">
+            </div>
         </form>
     </body>
 </html>

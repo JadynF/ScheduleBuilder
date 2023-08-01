@@ -385,7 +385,7 @@ function isRequiredSetting(course, schedule) { // function takes course JSON obj
                     schedEndHour = schedule[i]["endHour" + sNumSet];
                     schedEndMin = schedule[i]["endMin" + sNumSet];
 
-                    if (currStartHour > schedStartHour && currStartHour <= schedEndHour) {
+                    if (currStartHour > schedStartHour && currStartHour <= schedEndHour) { 
                         if (currStartHour === schedEndHour && currStartMin > schedEndMin) {
                             sNumSet++;
                             continue;
@@ -409,6 +409,7 @@ function isRequiredSetting(course, schedule) { // function takes course JSON obj
         cNumSet++;
     }
     
+    // check the amount of classes per day
     if (maxMWF != -1) {
         if ((cDays.includes("M") || cDays.includes("W") || cDays.includes("F")) && (currMWF >= maxMWF)) {
             return false;

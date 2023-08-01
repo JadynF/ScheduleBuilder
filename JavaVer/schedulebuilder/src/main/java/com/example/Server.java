@@ -49,6 +49,20 @@ public class Server {
                     json.close();
                     os.close();
                 }
+                else if (resource.equals("/homestyle.css")) {
+                    FileInputStream css = new FileInputStream("homestyle.css");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(css.readAllBytes());
+                    css.close();
+                    os.close();
+                }
+                else if (resource.equals("/coursestyle.css")) {
+                    FileInputStream css = new FileInputStream("coursestyle.css");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(css.readAllBytes());
+                    css.close();
+                    os.close();
+                }
             }
             else if (exchange.getRequestMethod().equals("POST")) { // handle POST requests
                 String data = "";
