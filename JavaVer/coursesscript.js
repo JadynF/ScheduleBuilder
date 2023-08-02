@@ -67,9 +67,35 @@ function handleData(data) {
 
     schedulesList = getSchedules(0, [], data, []); // build schedules
 
-    console.log(instructors);
+    if (data["No classes"] === true || schedulesList.length === 0) {
+        presentNothing();
+        return;
+    }
 
     presentSchedules(schedulesList); // add schedules to html
+}
+
+function presentNothing() {
+    tableBody = document.getElementById("tableDataBody");
+    if (tableBody != null) {
+        tableBody.remove();
+    }
+
+    table = document.getElementById("coursesTb");
+    tableDataBody = document.createElement("tbody");
+    tableDataBody.setAttribute("id", "tableDataBody");
+
+    row = document.createElement("tr");
+    col = document.createElement("td");
+    col.setAttribute("colspan", "8");
+
+    h2 = document.createElement("h2");
+    h2.appendChild(document.createTextNode("No Schedule Possibilities"));
+    col.appendChild(h2);
+    row.appendChild(col);
+    tableDataBody.appendChild(row);
+    table.appendChild(tableDataBody);
+
 }
 
 function presentSchedules(schedulesList) { // takes schedule list and adds to html

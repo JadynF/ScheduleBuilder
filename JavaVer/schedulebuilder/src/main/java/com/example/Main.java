@@ -30,7 +30,8 @@ public class Main {
         JSONObject json = new JSONObject();
         for (int i = 0; i < coursesList.size(); i++) {
             if (coursesList.get(i).size() == 0) { // if no offerings for course
-                return new JSONObject().toString();
+                json.put("No classes", true);
+                continue;
             }
             JSONObject coursesJson = new JSONObject(); // new object for each individual course
             json.put(coursesList.get(i).get(0).getSubject() + coursesList.get(i).get(0).getCourse(), coursesJson);
