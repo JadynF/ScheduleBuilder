@@ -1,11 +1,35 @@
 var courseCount = 2
 document.getElementById("newCourseButton").addEventListener("click", newCourse);
 document.getElementById("deleteCourseButton").addEventListener("click", delCourse);
+document.getElementById("submit").addEventListener("click", load);
+document.getElementById("closeLoader").addEventListener("click", closeLoader);
 
 yearInput = document.getElementById("Year");
+var loaderDiv = document.getElementById("loader");
 currentYear = new Date().getFullYear();
 yearInput.setAttribute("min", currentYear - 1);
 yearInput.setAttribute("max", currentYear + 1);
+
+function load() {
+    if (noEmptyFields()) {
+        loaderDiv.style.display = "block";
+    }
+}
+
+function noEmptyFields() {
+    elements = document.getElementById("coursesForm").getElementsByTagName("input");
+    for (element in elements) {
+        if (elements[element].id === "submit") 
+            return true;
+        if (elements[element].value === "") {
+            return false;
+        }
+    }
+}
+
+function closeLoader() {
+    loaderDiv.style.display = "none";
+}
 
 function newCourse() {
     var coursediv = document.getElementById("courseTb");

@@ -20,6 +20,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
             OutputStream os = exchange.getResponseBody();
             String resource = exchange.getRequestURI().toString(); // get the requested resource
+            System.out.println(resource);
             if (exchange.getRequestMethod().equals("GET")) { // handle GET requests
                 if (resource.equals("/")) {
                     FileInputStream html = new FileInputStream("HomePage.html"); 
