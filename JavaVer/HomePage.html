@@ -17,7 +17,7 @@
         </div>
         <hr>
         <form id="coursesForm" method="post" action="/submit">
-            <h2>Enter Academic Term</h2>
+            <h2 class="termHeader">Enter Academic Term</h2>
             <table class="datesTable">
                 <tr class="tableHeader">
                     <td>
@@ -41,7 +41,7 @@
                     </td>
                 </tr>
             </table>
-            <h2>Enter Course(s)</h2>
+            <h2 class="courseHeader">Enter Course(s)</h2>
             <table class="courseInputTb" id="courseTb">
                 <tr class="tableHeader">
                     <td>
@@ -66,14 +66,14 @@
             </div>
             <br>
             <div class="submit">
-                <input type="submit" id="submit">
+                <input style="padding: 0px; margin: 10px;" type="submit" id="submit">
             </div>
         </form>
         <div class="popup" id="loader">
             <h1>Loading...</h1>
             <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
             <div class="centered">
-                <button type="button" id="closeLoader">Close</button>
+                <button type="button" id="closeLoader" class="closeLoaderBttn">Close</button>
             <div>
         </div>
     </body>

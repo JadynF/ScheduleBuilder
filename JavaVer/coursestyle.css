@@ -66,3 +66,12 @@ th {
     padding: 5px;
     cursor: pointer;
 }
+.filtersHeader {
+    padding-bottom: 0px;
+    margin-bottom: 0%;
+    padding-top: 5px;
+}
+h3 {
+    padding: 0px;
+    margin: 0px;
+}
