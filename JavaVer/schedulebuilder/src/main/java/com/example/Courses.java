@@ -24,11 +24,17 @@ public class Courses {
     private Boolean honors = false;
     private Boolean cancelled = false;
 
+    private Boolean nullCourse = false; // set to true if no classes are found for this course
+
     public Courses(String sec) {
         this.section = setSection(sec);
     }
 
     ////////////////////////////////////////// SETTERS ////////////////////////////////////////////////
+
+    public void setNullCourse() {
+        this.nullCourse = true;
+    }
 
     public String setSection(String sec) {
         if (sec.contains("HONORS") || sec.contains("Honors"))
@@ -120,6 +126,10 @@ public class Courses {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////// GETTERS /////////////////////////////////////////////
+
+    public Boolean getNullCourse() {
+        return this.nullCourse;
+    }
 
     public String getCourse() {
         return this.course;

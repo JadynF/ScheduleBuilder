@@ -84,6 +84,11 @@ public class Scraper {
                 }
             }
         }
+        if (courseList.size() == 0) { // if no classes found
+            Courses course = new Courses(subject + "-" + cNum + "- null");
+            course.setNullCourse();
+            courseList.add(course);
+        }
         return courseList;
     }
 

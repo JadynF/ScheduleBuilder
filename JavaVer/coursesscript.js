@@ -63,6 +63,18 @@ function handleData(data) {
 
     console.log(data);
 
+    keys = Object.keys(data);
+    nullCourses = [];
+    for (i in keys) {
+        if (data[keys[i]] === "Null") {
+            nullCourses.push(keys[i]);
+        }
+    }
+    if (nullCourses.length > 0) {
+        presentNullCourses(nullCourses);
+        return;
+    }
+
     json = data;
 
     schedulesList = getSchedules(0, [], data, []); // build schedules
@@ -73,6 +85,45 @@ function handleData(data) {
     }
 
     presentSchedules(schedulesList); // add schedules to html
+}
+
+function presentNullCourses(nullCourses) {
+    document.getElementById("tableHeaderBody").remove();
+    document.getElementById("filtersDiv").remove();
+    tableBody = document.getElementById("tableDataBody");
+    if (tableBody != null) {
+        tableBody.remove();
+    }
+
+    table = document.getElementById("coursesTb");
+    tableDataBody = document.createElement("tbody");
+    tableDataBody.setAttribute("id", "tableDataBody");
+
+    headerRow = document.createElement("th");
+    h2 = document.createElement("h2");
+    h2.appendChild(document.createTextNode("The Following Course(s) Have No Offerings"));
+    headerRow.appendChild(h2);
+    tableDataBody.appendChild(headerRow);
+
+    tr = document.createElement("tr");
+    td = document.createElement("td");
+    td.setAttribute("colspan", "8");
+    h3 = document.createElement("h3");
+    ul = document.createElement("ul");
+
+    for (i in nullCourses) {
+        li = document.createElement("li")
+        text = document.createTextNode(nullCourses[i])
+        li.appendChild(text);
+        ul.appendChild(li);
+    }
+
+    h3.appendChild(ul);
+    td.appendChild(h3);
+    tr.appendChild(td);
+    tableDataBody.appendChild(tr);
+
+    table.appendChild(tableDataBody);
 }
 
 function presentNothing() {
@@ -268,24 +319,6 @@ function compatable(course, schedule) { // a function that takes a course as JSO
         instructors.push(course["instructor"]);
     }
 
-    if (requiredC != null) { // check for required courses
-        if (!isRequiredSection(course)) {
-            return false;
-        }
-    }
-
-    if (requiredI != null) { // check for required instructors
-        if (!isRequiredInstructor(course)) {
-            return false;
-        }
-    }
-
-    if (prohibitedI != null) { // check for prohibited instructors
-        if (isProhibitedInstructor(course)) {
-            return false;
-        }
-    }
-
     if (!honors) { // check honors filter
         if (course["honors"]) {
             return false;
@@ -338,18 +371,6 @@ function compatable(course, schedule) { // a function that takes a course as JSO
     }
 
     return true;
-}
-
-function isRequiredSection(course) {
-
-}
-
-function isRequiredInstructor(course) {
-
-}
-
-function isProhibitedInstructor(course) {
-
 }
 
 function isRequiredSetting(course, schedule) { // function takes course JSON object, and current schedule, and returns false if settings conflict
