@@ -7,64 +7,66 @@
     </head>
     <body>
         <div class="banner">
-            <a href="/"><div class="bannerLeft"><h2 class="leftBannerButton">Go Back</h2></div></a><div class="bannerCenter"><h1>Schedule Possibilities</h1></div><div class="bannerRight">&nbsp</div>
+            <a href="/"><div class="bannerLeft"><h2 class="leftBannerButton">Go Back</h2></div></a><div id="centerBanner" class="bannerCenter"><h1 id="centerHeader">Schedule Possibilities</h1></div><div class="bannerRight">&nbsp</div>
         </div>
         <hr>
         <div class="main" id="mainDiv">
             <div class="filters" id="filtersDiv">
-                <h2 class="filtersHeader">Filters</h2>
-                <hr style="width: 95%">
-                <table class="filterTb" id="filterTb">
-                    <tr>
-                        <td>
-                            Earliest Time                       
-                        </td>
-                        <td>
-                            Latest Time               
-                        </td>
-                        <td>
-                            Max MWF Classes          
-                        </td>
-                        <td>
-                            Max TR Classes                  
-                        </td>
-                        <td>
-                            Min Open Seats                       
-                        </td>
-                        <td>
-                            Allow Virtual            
-                        </td>
-                        <td>
-                            Allow Honors
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="time" id="earliestHour" title="Earliest allowed class time">
-                        </td>
-                        <td>
-                            <input type="time" id="latestHour" title="Latest allowed class time">
-                        </td>
-                        <td>
-                            <input type="number" id="maxMWF" title="Max amount of classes on MWF">
-                        </td>
-                        <td>
-                            <input type="number" id="maxTR" title="Max amount of classes on TR">
-                        </td>
-                        <td>
-                            <input type="number" id="minSeats" title="Min amount of open seats allowed">
-                        </td>
-                        <td>
-                            <input type="checkbox" id="allowVirtual" checked="true">
-                        </td>
-                        <td>
-                            <input type="checkbox" id="allowHonors" checked="true">
-                        </td>
-                        <td>
-                            <button type="button" id="applyFilter">Apply Filter</button>
-                        </td>
-                    </tr>
-                </table>
+                <form>
+                    <h2 class="filtersHeader">Filters</h2>
+                    <hr style="width: 95%">
+                    <table class="filterTb" id="filterTb">
+                        <tr>
+                            <td>
+                                Earliest Time                       
+                            </td>
+                            <td>
+                                Latest Time               
+                            </td>
+                            <td>
+                                Max MWF Classes          
+                            </td>
+                            <td>
+                                Max TR Classes                  
+                            </td>
+                            <td>
+                                Available Seats                     
+                            </td>
+                            <td>
+                                Allow Virtual            
+                            </td>
+                            <td>
+                                Allow Honors
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="time" id="earliestHour" title="Earliest allowed class time">
+                            </td>
+                            <td>
+                                <input type="time" id="latestHour" title="Latest allowed class time">
+                            </td>
+                            <td>
+                                <input type="number" id="maxMWF" title="Max amount of classes on MWF">
+                            </td>
+                            <td>
+                                <input type="number" id="maxTR" title="Max amount of classes on TR">
+                            </td>
+                            <td>
+                                <input type="number" id="minSeats" title="Min amount of open seats allowed">
+                            </td>
+                            <td>
+                                <input type="checkbox" id="allowVirtual" checked="true">
+                            </td>
+                            <td>
+                                <input type="checkbox" id="allowHonors" checked="true">
+                            </td>
+                        </tr>
+                    </table>
+                    <hr style="width: 95%">
+                    <button type="button" id="applyFilter">Apply Filter</button>
+                    <input type="reset" value="Reset Filter">
+                </form>
             </div>
             <br>
             <div class="courses">

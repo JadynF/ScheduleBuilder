@@ -11,6 +11,7 @@ body {
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }
 h1,
 h2 {
@@ -78,4 +79,8 @@ h3 {
 ul {
     text-align: center;
     list-style-position: inside;
+}
+button {
+    padding-bottom: 0px;
+    margin-bottom: 5px;
 }

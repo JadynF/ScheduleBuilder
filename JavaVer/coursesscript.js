@@ -4,24 +4,32 @@ var latestHour = -1;
 var latestMin = -1;
 var maxTR = -1;
 var maxMWF = -1;
-var requiredC = null;
-var requiredI = null;
-var prohibitedI = null;
 var minSeats = -1;
 var virtual = true;
 var honors = true;
 var json = null;
 var instructors = [];
 
+var scheduleList = []; // array of schedules
+var scheduleStartPoint = 0; // index of presented schedules
+
 document.getElementById("applyFilter").addEventListener("click", applyFilter);
 
-fetch('./courses.json')
+fetch('./courses.json') // fetch the offered courses and then handle the data
     .then(res => {
         return res.json();
     })
     .then(data => handleData(data));
 
-function applyFilter() {
+window.onscroll = function() { // set listener for scroll action that loads new content once the bottom of the page is reached
+    if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight) {
+        presentSchedules(schedulesList);
+    }
+};
+
+function applyFilter() { // function that gets all filter values and handles the data
+
+    scheduleStartPoint = 0;
     document.getElementById("tableDataBody").remove(); // reset table
 
     earliestTime = document.getElementById("earliestHour").value.split(":"); // get earliest time filter
@@ -59,35 +67,59 @@ function applyFilter() {
     handleData(json);
 }
 
-function handleData(data) {
+function handleData(data) { // function that takes json data of offered courses, and completely handles all schedule building and presenting
 
-    console.log(data);
+    json = data;
+
+    table = document.getElementById("coursesTb");
 
     keys = Object.keys(data);
-    nullCourses = [];
+
+    nullCourses = []; // get each course with no offerings
     for (i in keys) {
         if (data[keys[i]] === "Null") {
             nullCourses.push(keys[i]);
         }
     }
-    if (nullCourses.length > 0) {
+    if (nullCourses.length > 0) { // if course has no offerings, show the user
+        showHeader(0);
         presentNullCourses(nullCourses);
         return;
     }
 
-    json = data;
-
     schedulesList = getSchedules(0, [], data, []); // build schedules
 
-    if (data["No classes"] === true || schedulesList.length === 0) {
+    showHeader(schedulesList.length); // show the amount of schedules
+
+    if (data["No classes"] === true || schedulesList.length === 0) { // if no possible schedules
         presentNothing();
         return;
     }
 
+    console.log("sus");
     presentSchedules(schedulesList); // add schedules to html
 }
 
-function presentNullCourses(nullCourses) {
+function showHeader(numSchedules) { // function that changes the main header to show amount of schedule possibilities
+
+    div = document.getElementById("centerBanner"); // reset header
+    header = document.getElementById("centerHeader");
+    header.remove();
+    header = document.createElement("h1");
+    header.setAttribute("id", "centerHeader");
+
+    if (numSchedules > 1 || numSchedules === 0) { // plural cases
+        header.appendChild(document.createTextNode(numSchedules + " Schedule Possibilities"));
+    }
+    else { // singular case
+        header.appendChild(document.createTextNode(numSchedules + " Schedule Possibility"));
+    }
+    div.appendChild(header);
+}
+
+function presentNullCourses(nullCourses) { // function to show if course has no offerings
+
+    // remove elements from page
     document.getElementById("tableHeaderBody").remove();
     document.getElementById("filtersDiv").remove();
     tableBody = document.getElementById("tableDataBody");
@@ -95,7 +127,7 @@ function presentNullCourses(nullCourses) {
         tableBody.remove();
     }
 
-    table = document.getElementById("coursesTb");
+    table = document.getElementById("coursesTb"); // create new table body
     tableDataBody = document.createElement("tbody");
     tableDataBody.setAttribute("id", "tableDataBody");
 
@@ -111,7 +143,7 @@ function presentNullCourses(nullCourses) {
     h3 = document.createElement("h3");
     ul = document.createElement("ul");
 
-    for (i in nullCourses) {
+    for (i in nullCourses) { // show list of courses with no offerings
         li = document.createElement("li")
         text = document.createTextNode(nullCourses[i])
         li.appendChild(text);
@@ -126,8 +158,9 @@ function presentNullCourses(nullCourses) {
     table.appendChild(tableDataBody);
 }
 
-function presentNothing() {
-    tableBody = document.getElementById("tableDataBody");
+function presentNothing() { // function to present when there are no schedule possibilities
+
+    tableBody = document.getElementById("tableDataBody"); // reset table body
     if (tableBody != null) {
         tableBody.remove();
     }
@@ -149,20 +182,28 @@ function presentNothing() {
 
 }
 
-function presentSchedules(schedulesList) { // takes schedule list and adds to html
+function presentSchedules(schedulesList) { // takes schedule list and adds needed schedules to html, will look at "scheduleStartPoint" to know what index of schedules to present
 
-    table = document.getElementById("coursesTb");
-    tableDataBody = document.createElement("tbody");
-    tableDataBody.setAttribute("id", "tableDataBody");
+    tableDataBody = document.getElementById("tableDataBody"); // ensure there is a table body
+    if (tableDataBody == null) {
+        table = document.getElementById("coursesTb");
+        tableDataBody = document.createElement("tbody");
+        tableDataBody.setAttribute("id", "tableDataBody");
+    }
 
-    count = 1;
-    for (i in schedulesList) { // for each schedule in scheduleList
+    i = scheduleStartPoint;
+
+    while (i < scheduleStartPoint + 100) { // for each schedule in scheduleList starting at scheduleStartPoint and ending at scheduleStartPoint + 100
+        
+        if (i >= schedulesList.length) { // if reached the end of scheduleList, break
+            break;
+        }
 
         newLable = document.createElement("tr"); // add schedule number to table
         newHeader = document.createElement("th");
         newHeader.setAttribute("rowspan", "" + (schedulesList[i].length + 1));
         newTextHeader = document.createElement("h2");
-        text = document.createTextNode("#" + count++);
+        text = document.createTextNode("#" + (i + 1));
         newTextHeader.appendChild(text);
         newHeader.appendChild(newTextHeader);
         newLable.appendChild(newHeader);
@@ -236,6 +277,7 @@ function presentSchedules(schedulesList) { // takes schedule list and adds to ht
             newDataRow.appendChild(restrictionsData);
             tableDataBody.appendChild(newDataRow);
         }
+
         dividerRow = document.createElement("tr"); // border between schedule
         dividerData = document.createElement("td");
         dividerData.setAttribute("colspan", "8");
@@ -243,7 +285,10 @@ function presentSchedules(schedulesList) { // takes schedule list and adds to ht
         dividerData.appendChild(divider);
         dividerRow.appendChild(dividerData);
         tableDataBody.appendChild(dividerRow);
+        i++;
     }
+
+    scheduleStartPoint = i; // set new scheduleStartPoint
     table.appendChild(tableDataBody);
 }
 
@@ -284,7 +329,7 @@ function getTime(course, currSet) { // function that takes a course and the curr
     return time;
 }
 
-function getSchedules(i, schedule, coursesList, schedules) { // function that takes an int 0, an empty shedule array, the 2D array of courses, and an empty schedules array, and returns a built schedules list
+function getSchedules(i, schedule, coursesList, schedules) { // a recursive function that takes an int 0, an empty shedule array, the 2D array of courses, and an empty schedules array, and returns a built schedules list
 
     if (i == Object.keys(coursesList).length) { // if i === the length of the coursesList, then all the desired classes have been added
         newSchedule = JSON.parse(JSON.stringify(schedule));
@@ -309,13 +354,13 @@ function getSchedules(i, schedule, coursesList, schedules) { // function that ta
 
 function compatable(course, schedule) { // a function that takes a course as JSON object, and the current schedule, and returns true if they are compatable
 
-    if (minSeats != -1) {
+    if (minSeats != -1) { // check for minimum open seats
         if (course["openSeats"] < minSeats) {
             return false;
         }
     }
 
-    if (!instructors.includes(course["instructor"])) {
+    if (!instructors.includes(course["instructor"])) { // add instructors 
         instructors.push(course["instructor"]);
     }
 
@@ -378,10 +423,10 @@ function isRequiredSetting(course, schedule) { // function takes course JSON obj
     currMWF = 0; // keep track of number of classes per day
     currTR = 0;
 
-    cNumSet = 0;
-    cDays = "";
+    cNumSet = 0; // keep track of number of class times for the current course
+    cDays = ""; // current course days
 
-    while (cNumSet < course["numSettings"]) { // loop through each setting in the course
+    while (cNumSet < course["numSettings"]) { // loop through each class time in the current course
 
         cDays = course["days" + cNumSet]; // get days course is offered per setting
 
@@ -395,8 +440,9 @@ function isRequiredSetting(course, schedule) { // function takes course JSON obj
                 continue;
             }
     
-            sNumSet = 0;
-            while (sNumSet < schedule[i]["numSettings"]) { // loop through each setting in the schedule course
+            sNumSet = 0; // keep track of number of class times for the current schedule course
+
+            while (sNumSet < schedule[i]["numSettings"]) { // loop through each class time in the schedule course
 
                 sDays = schedule[i]["days" + sNumSet]; // get days schedule course is offered per setting
 
@@ -407,7 +453,7 @@ function isRequiredSetting(course, schedule) { // function takes course JSON obj
                 if (sDays.includes("M") || sDays.includes("W") || sDays.includes("F")) { // increment days counters
                     currMWF++;
                 }
-                else if (sDays.includes("T") || sDays.contains("R")) {
+                else if (sDays.includes("T") || sDays.includes("R")) {
                     currTR++;
                 }
 
