@@ -23,6 +23,8 @@ public class Courses {
     private String restrictions;
     private Boolean honors = false;
     private Boolean cancelled = false;
+    private String session;
+    private String prereqs;
 
     private Boolean nullCourse = false; // set to true if no classes are found for this course
 
@@ -52,6 +54,14 @@ public class Courses {
         this.callNum = newCNum;
         if (this.callNum.contains("H"))
             this.honors = true;
+    }
+
+    public void setPrereqs(String p) {
+        this.prereqs = p;
+    }
+
+    public void setSession(String s) {
+        this.session = s;
     }
 
     public void setStatAndSeat(String sAndS) {
@@ -126,6 +136,14 @@ public class Courses {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////// GETTERS /////////////////////////////////////////////
+
+    public String getPrereqs() {
+        return this.prereqs;
+    }
+
+    public String getSession() {
+        return this.session;
+    }
 
     public Boolean getNullCourse() {
         return this.nullCourse;

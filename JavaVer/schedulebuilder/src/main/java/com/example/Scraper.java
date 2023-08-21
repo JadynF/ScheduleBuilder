@@ -39,9 +39,7 @@ public class Scraper {
                     Elements rowData = row.select("td");
                     if (rowData.size() != 0) {
                         if (rowData.get(0).hasAttr("colspan")) { // if colspan attribute is present, then it is course notes
-                            //////////////////////////////////////////////////////
-                            // Add notes compatability
-                            //////////////////////////////////////////////////////
+                            currCourse.setPrereqs(rowData.get(0).text());
                             continue;
                         }
                         else if (currCourse != null) { // is same course, and current row will contain more information on other times
@@ -75,6 +73,8 @@ public class Scraper {
                                 currCourse.setSetting(cellData.text());
                             else if (headerValue.equals("Instructor"))
                                 currCourse.setInstructor(cellData.text());
+                            else if (headerValue.equals("Session"))
+                                currCourse.setSession(cellData.text());
                         }
                     }
                     // if object doesnt have adequate data, remove from list

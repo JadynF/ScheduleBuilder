@@ -51,7 +51,9 @@ public class Main {
                     .put("cancelled", course.getCancelled())
                     .put("section", course.getSection())
                     .put("name", course.getSubject() + "-" + course.getCourse())
-                    .put("numSettings", course.getNumTimes());
+                    .put("numSettings", course.getNumTimes())
+                    .put("prerequisites", course.getPrereqs())
+                    .put("session", course.getSession());
                 for (int k = 0; k < course.getNumTimes(); k++) { // put every offering time in object
                     courseJson.put("days" + k, course.getDays().get(k));
                     courseJson.put("startHour" + k, course.getHourStart().get(k));

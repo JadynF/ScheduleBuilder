@@ -71,6 +71,8 @@ function handleData(data) { // function that takes json data of offered courses,
 
     json = data;
 
+    console.log(json);
+
     table = document.getElementById("coursesTb");
 
     keys = Object.keys(data);
@@ -296,34 +298,42 @@ function getTime(course, currSet) { // function that takes a course and the curr
 
     time = course["days" + currSet] + " "; // add days to time text
 
-    extraZero = "";
-    if (course["startMin" + currSet] === 0) { // determine if an extra zero is needed for the start minute
-        extraZero = "0";
+    extraAfterZero = "";
+    extraBeforeZero = "";
+    if (course["startMin" + currSet] === 0) { // determine if an extra zero is needed after the start minute
+        extraAfterZero = "0";
+    }
+    else if (course["startMin" + currSet] < 10) {
+        extraBeforeZero = "0";
     }
 
     if (course["startHour" + currSet] > 12) { // for any time after 12 PM
-        time += (course["startHour" + currSet] - 12) + ":" + course["startMin" + currSet] + extraZero + "PM - ";
+        time += (course["startHour" + currSet] - 12) + ":" + extraBeforeZero + course["startMin" + currSet] + extraAfterZero + "PM - ";
     }
     else if (course["startHour" + currSet] === 12) { // for noon
-        time += (course["startHour" + currSet]) + ":" + course["startMin" + currSet] + extraZero + "PM - ";
+        time += (course["startHour" + currSet]) + ":" + extraBeforeZero + course["startMin" + currSet] + extraAfterZero + "PM - ";
     }
     else { // for any time before 12 PM
-        time += (course["startHour" + currSet]) + ":" + course["startMin" + currSet] + extraZero + "AM - ";
+        time += (course["startHour" + currSet]) + ":" + extraBeforeZero + course["startMin" + currSet] + extraAfterZero + "AM - ";
     }
 
-    extraZero = "";
+    extraAfterZero = "";
+    extraBeforeZero = "";
     if (course["endMin" + currSet] === 0) { // determine if extra zero is needed for end minute
-        extraZero = "0";
+        extraAfterZero = "0";
+    }
+    else if (course["endMin" + currSet] < 10) {
+        extraBeforeZero = "0";
     }
 
     if (course["endHour" + currSet] > 12) {
-        time += (course["endHour" + currSet] - 12) + ":" + course["endMin" + currSet] + extraZero + "PM";
+        time += (course["endHour" + currSet] - 12) + ":" + extraBeforeZero + course["endMin" + currSet] + extraAfterZero + "PM";
     }
     else if (course["endHour" + currSet] === 12) {
-        time += (course["endHour" + currSet]) + ":" + course["endMin" + currSet] + extraZero + "PM";
+        time += (course["endHour" + currSet]) + ":" + extraBeforeZero + course["endMin" + currSet] + extraAfterZero + "PM";
     }
     else {
-        time += (course["endHour" + currSet]) + ":" + course["endMin" + currSet] + extraZero + "AM";
+        time += (course["endHour" + currSet]) + ":" + extraBeforeZero + course["endMin" + currSet] + extraAfterZero + "AM";
     }
 
     return time;
