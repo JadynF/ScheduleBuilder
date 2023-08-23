@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.HashMap;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
+import java.util.Stack;
 
 public class Server {
+
     public static void main(String[] args) throws Exception {
         HttpServer sv = HttpServer.create(new InetSocketAddress(8080), 50); // create server
         sv.createContext("/", new Handler()); // set context handler
@@ -17,6 +19,11 @@ public class Server {
     }
 
     static class Handler implements HttpHandler {
+
+        Stack<String> jsonStack = new Stack<String>(); // keep track of created json objects 
+
+        // NEED TO IMPLEMENT COOKIES, OR SOME TYPE OF CLIENT IDENTIFYER, AND CREATE A JSON MAP TO KEEP TRACK OF WHICH CLIENT'S JSON OBJECT IS WHICH
+
         public void handle(HttpExchange exchange) throws IOException {
             OutputStream os = exchange.getResponseBody();
             String resource = exchange.getRequestURI().toString(); // get the requested resource
@@ -44,9 +51,10 @@ public class Server {
                     os.close();
                 }
                 else if (resource.equals("/courses.json")) {
+                    System.out.println("amogus");
                     FileInputStream json = new FileInputStream("courses.json");
                     exchange.sendResponseHeaders(200, 0);
-                    os.write(json.readAllBytes());
+                    os.write(jsonStack.pop().getBytes());
                     json.close();
                     os.close();
                 }
@@ -92,7 +100,16 @@ public class Server {
                         courseNums[i] = pairs.get("CourseID" + (i + 1)).replaceAll("\\+", "");
                     }
                     ScrapeThread t = new ScrapeThread(exchange, os, year, quarter, courses, courseNums); // start new thread to scrape data and send response back
-                    new Thread(t).start();
+                    Thread thread = new Thread(t);
+                    thread.start();
+                    try {
+                        thread.join();
+                        String json = t.getJson();
+                        this.jsonStack.push(json);
+                    }
+                    catch (Exception e) {
+                        System.out.println(e);
+                    }
                 }
             }
         }

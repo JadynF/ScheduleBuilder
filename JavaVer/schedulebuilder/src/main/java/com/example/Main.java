@@ -4,7 +4,7 @@ import java.io.*;
 import org.json.JSONObject;
 
 public class Main {
-    public static void main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{ // take desired courses, scrape data, and create JSON file with data
+    public static String main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{ // take desired courses, scrape data, and create JSON file with data
 
         long start = System.nanoTime();
         Scraper webScraper = new Scraper();
@@ -23,6 +23,7 @@ public class Main {
         BufferedWriter jsonWriter = new BufferedWriter(new FileWriter("courses.json"));
         jsonWriter.write(json);
         jsonWriter.close();
+        return json;
     }
 
     public static String buildJson(ArrayList<ArrayList<Courses>> coursesList) { // function that takes 2d array of courses being offered, and returns those courses as a JSON object

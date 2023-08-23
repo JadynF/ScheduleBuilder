@@ -98,7 +98,6 @@ function handleData(data) { // function that takes json data of offered courses,
         return;
     }
 
-    console.log("sus");
     presentSchedules(schedulesList); // add schedules to html
 }
 

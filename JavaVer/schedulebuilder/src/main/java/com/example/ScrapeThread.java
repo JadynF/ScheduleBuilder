@@ -11,6 +11,7 @@ public class ScrapeThread implements Runnable{
     String quarter;
     String[] courses;
     String[] courseNums;
+    String json;
 
     public ScrapeThread (HttpExchange exchange, OutputStream output, String year, String quarter, String[] courses, String[] courseNums) {
         this.ex = exchange;
@@ -23,7 +24,8 @@ public class ScrapeThread implements Runnable{
 
     public void run() { 
         try {
-            Main.main(year, quarter, courses, courseNums); // scrape and get JSON
+            //String json = 
+            this.json = Main.main(year, quarter, courses, courseNums); // scrape and get JSON
             FileInputStream html = new FileInputStream("CoursesPage.html"); // send reponse
             ex.sendResponseHeaders(200, 0);
             os.write(html.readAllBytes());
@@ -33,5 +35,9 @@ public class ScrapeThread implements Runnable{
         catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public String getJson() {
+        return this.json;
     }
 }
