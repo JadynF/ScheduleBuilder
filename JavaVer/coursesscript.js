@@ -7,6 +7,7 @@ var maxMWF = -1;
 var minSeats = -1;
 var virtual = true;
 var honors = true;
+var credExam = true;
 var json = null;
 var instructors = [];
 
@@ -69,6 +70,8 @@ function applyFilter() { // function that gets all filter values and handles the
     virtual = document.getElementById("allowVirtual").checked; // get virtual boolean
 
     honors = document.getElementById("allowHonors").checked; // get honors boolean
+
+    credExam = document.getElementById("allowCreditExams").checked; // get credit exams boolean
 
     handleData(json);
 }
@@ -390,6 +393,12 @@ function getSchedules(i, schedule, coursesList, schedules) { // a recursive func
 }
 
 function compatable(course, schedule) { // a function that takes a course as JSON object, and the current schedule, and returns true if they are compatable
+
+    if (!credExam) {
+        if (course["section"].includes("E") || course["restrictions"].includes("CREDIT EXAM")) {
+            return false;
+        }
+    }
 
     if (minSeats != -1) { // check for minimum open seats
         if (course["openSeats"] < minSeats) {
