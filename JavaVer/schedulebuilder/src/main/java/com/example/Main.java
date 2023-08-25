@@ -7,12 +7,11 @@ public class Main {
     public static String main(String year, String quarter, String[] courses, String[] courseNums) throws IOException{ // take desired courses, scrape data, and create JSON file with data
 
         long start = System.nanoTime();
-        Scraper webScraper = new Scraper();
 
         ArrayList<ArrayList<Courses>> coursesList = new ArrayList<ArrayList<Courses>>(); // 2d array of every course being offered
 
         for (int i = 0; i < courses.length; i++) {
-            coursesList.add(webScraper.scrape(year, quarter, courses[i], courseNums[i]));
+            coursesList.add(Scraper.scrape(year, quarter, courses[i], courseNums[i]));
         }
 
         long end = System.nanoTime();

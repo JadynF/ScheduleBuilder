@@ -20,7 +20,7 @@ public class Courses {
     private int numTimes = 0; // number of times a day class takes place
     private String location; // location of class
     private String instructor; // instructor of class
-    private String restrictions; // notes, can list required majors or honors requirements
+    private String restrictions = ""; // notes, can list required majors or honors requirements
     private Boolean honors = false; // if the class is honors
     private Boolean cancelled = false; // if the class has been listed as cancelled
     private String session; // the session the class is offered in during the quarter
@@ -41,6 +41,8 @@ public class Courses {
     public String setSection(String sec) { // takes entire class section name, parses into the class subject, course, and returns the class section
         if (sec.contains("HONORS") || sec.contains("Honors"))
             this.honors = true;
+        if (sec.contains("CREDIT EXAM") || sec.contains("EXAM"))
+            this.restrictions += "CREDIT EXAM";
         String[] parsed = sec.split("-");
         this.subject = parsed[0].replaceAll("\\s+", "");
         this.course = parsed[1].replaceAll("\\s+", "");
@@ -127,7 +129,6 @@ public class Courses {
         if (parsed.length <= 1)
             return;
         this.instructor = parsed[0] + " " + parsed[1].charAt(0);
-        this.restrictions = "";
         for (int i = 2; i < parsed.length; i++) {
             this.restrictions += parsed[i] + " ";
         }

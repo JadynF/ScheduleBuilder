@@ -55,12 +55,22 @@ th {
     text-align: center;
 }
 .bannerRight{
+    text-align: right;
     display: inline-block;
     width: 25%;
-    text-align: right;
 }
 .leftBannerButton {
     text-align: left;
+    background-color: rgba(45, 59, 78, 0.965);
+    border-radius: 5px;
+    width: fit-content;
+    padding: 5px;
+    cursor: pointer;
+}
+.rightBannerButton {
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
     background-color: rgba(45, 59, 78, 0.965);
     border-radius: 5px;
     width: fit-content;

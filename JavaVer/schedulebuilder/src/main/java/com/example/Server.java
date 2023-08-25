@@ -51,11 +51,8 @@ public class Server {
                     os.close();
                 }
                 else if (resource.equals("/courses.json")) {
-                    System.out.println("amogus");
-                    FileInputStream json = new FileInputStream("courses.json");
                     exchange.sendResponseHeaders(200, 0);
                     os.write(jsonStack.pop().getBytes());
-                    json.close();
                     os.close();
                 }
                 else if (resource.equals("/homestyle.css")) {

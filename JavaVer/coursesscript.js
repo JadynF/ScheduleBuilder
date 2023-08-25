@@ -12,6 +12,7 @@ var instructors = [];
 
 var scheduleList = []; // array of schedules
 var scheduleStartPoint = 0; // index of presented schedules
+var callNumList = []; // array of call numbers
 
 document.getElementById("applyFilter").addEventListener("click", applyFilter);
 
@@ -26,6 +27,11 @@ window.onscroll = function() { // set listener for scroll action that loads new 
         presentSchedules(schedulesList);
     }
 };
+
+function copyCallNums(id) {
+
+    console.log("click");
+}
 
 function applyFilter() { // function that gets all filter values and handles the data
 
@@ -200,19 +206,32 @@ function presentSchedules(schedulesList) { // takes schedule list and adds neede
             break;
         }
 
-        newLable = document.createElement("tr"); // add schedule number to table
+        newLable = document.createElement("tr"); // add schedule number and copy call number button to table
         newHeader = document.createElement("th");
         newHeader.setAttribute("rowspan", "" + (schedulesList[i].length + 1));
         newTextHeader = document.createElement("h2");
         text = document.createTextNode("#" + (i + 1));
         newTextHeader.appendChild(text);
+        button = document.createElement("button");
+        button.setAttribute("type", "button");
+        button.setAttribute("class", "callNumsButton");
+        buttonText = document.createTextNode("Copy Call Numbers");
+        button.appendChild(buttonText);
+        newTextHeader.appendChild(document.createElement("br"));
+        newTextHeader.appendChild(button);
         newHeader.appendChild(newTextHeader);
         newLable.appendChild(newHeader);
         tableDataBody.appendChild(newLable);
 
+        callNumList[i] = "";
+
         for (j in schedulesList[i]) { // for each course in schedule
 
             course = schedulesList[i][j];
+
+            button.setAttribute("id", "callNums" + i);
+
+            callNumList[i] += course["callNum"] + " ";
 
             newDataRow = document.createElement("tr");
 
@@ -291,6 +310,15 @@ function presentSchedules(schedulesList) { // takes schedule list and adds neede
 
     scheduleStartPoint = i; // set new scheduleStartPoint
     table.appendChild(tableDataBody);
+
+    var callNumButtons = document.getElementsByClassName("callNumsButton");
+
+    for (i = 0; i < callNumButtons.length; i++) { // set event listener for all call number copy buttons
+        callNumButtons[i].addEventListener("click", function() {
+            num = parseInt(this.id.substring(8));
+            navigator.clipboard.writeText(callNumList[num]); // set clipboard
+        });
+    }   
 }
 
 function getTime(course, currSet) { // function that takes a course and the current setting number, and returns time string to present on table
