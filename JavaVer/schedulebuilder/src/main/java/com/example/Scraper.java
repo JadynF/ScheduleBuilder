@@ -78,7 +78,7 @@ public class Scraper {
                         }
                     }
                     // if object doesnt have adequate data, remove from list
-                    if (currCourse != null && (currCourse.getOpen() == false || currCourse.getCallNum() == null || currCourse.getCancelled())) {
+                    if (courseList.size() > 0 && currCourse != null && (currCourse.getOpen() == false || currCourse.getCallNum() == null || currCourse.getCancelled())) {
                         courseList.remove(courseList.size() - 1);
                     }
                 }

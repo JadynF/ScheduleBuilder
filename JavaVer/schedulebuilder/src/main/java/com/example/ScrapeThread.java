@@ -26,7 +26,7 @@ public class ScrapeThread implements Runnable{
         try {
             //String json = 
             this.json = Main.main(year, quarter, courses, courseNums); // scrape and get JSON
-            FileInputStream html = new FileInputStream("CoursesPage.html"); // send reponse
+            FileInputStream html = new FileInputStream("./pages/CoursesPage.html"); // send reponse
             ex.sendResponseHeaders(200, 0);
             os.write(html.readAllBytes());
             html.close();

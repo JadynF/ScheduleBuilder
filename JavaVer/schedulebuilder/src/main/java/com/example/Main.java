@@ -19,9 +19,6 @@ public class Main {
         System.out.println(timeElapsed + " seconds taken");
 
         String json = buildJson(coursesList);
-        BufferedWriter jsonWriter = new BufferedWriter(new FileWriter("courses.json"));
-        jsonWriter.write(json);
-        jsonWriter.close();
         return json;
     }
 
