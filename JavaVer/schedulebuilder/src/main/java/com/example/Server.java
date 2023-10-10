@@ -34,41 +34,42 @@ public class Server {
                     exchange.sendResponseHeaders(200, 0);
                     os.write(html.readAllBytes());
                     html.close();
-                    os.close();
                 }
                 else if (resource.equals("/homescript.js")) {
                     FileInputStream js = new FileInputStream("./scripts/homescript.js");
                     exchange.sendResponseHeaders(200, 0);
                     os.write(js.readAllBytes());
                     js.close();
-                    os.close();
                 }
                 else if (resource.equals("/coursesscript.js")) {
                     FileInputStream js = new FileInputStream("./scripts/coursesscript.js");
                     exchange.sendResponseHeaders(200, 0);
                     os.write(js.readAllBytes());
                     js.close();
-                    os.close();
                 }
                 else if (resource.equals("/courses.json")) {
                     exchange.sendResponseHeaders(200, 0);
                     os.write(jsonStack.pop().getBytes());
-                    os.close();
                 }
                 else if (resource.equals("/homestyle.css")) {
                     FileInputStream css = new FileInputStream("./stylings/homestyle.css");
                     exchange.sendResponseHeaders(200, 0);
                     os.write(css.readAllBytes());
                     css.close();
-                    os.close();
                 }
                 else if (resource.equals("/coursestyle.css")) {
                     FileInputStream css = new FileInputStream("./stylings/coursestyle.css");
                     exchange.sendResponseHeaders(200, 0);
                     os.write(css.readAllBytes());
                     css.close();
-                    os.close();
                 }
+                else if (resource.equals("/multiselect-dropdown.js")) {
+                    FileInputStream js = new FileInputStream("./scripts/multiselect-dropdown.js");
+                    exchange.sendResponseHeaders(200, 0);
+                    os.write(js.readAllBytes());
+                    js.close();
+                }
+                os.close();
             }
             else if (exchange.getRequestMethod().equals("POST")) { // handle POST requests
                 String data = "";

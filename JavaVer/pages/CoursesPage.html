@@ -3,6 +3,7 @@
     <head>
         <title>Schedule Possibilities</title>
         <script src="coursesscript.js" defer></script>
+        <script src="multiselect-dropdown.js" defer></script>
         <link rel="stylesheet" href="coursestyle.css">
     </head>
     <body>
@@ -30,7 +31,10 @@
                                 Max TR Classes                  
                             </td>
                             <td>
-                                Available Seats                     
+                                Min Available Seats                     
+                            </td>
+                            <td>
+                                Required Instructors
                             </td>
                             <td>
                                 Allow Virtual            
@@ -57,6 +61,12 @@
                             </td>
                             <td>
                                 <input type="number" id="minSeats" title="Min amount of open seats allowed">
+                            </td>
+                            <td>
+                                <select id="instructorSelect" multiple>
+                                    <option value="K CHERRY">K CHERRY</option>
+                                    <option value="I ABDOULAHI">I ABDOULAHI</option>
+                                </select>
                             </td>
                             <td>
                                 <input type="checkbox" id="allowVirtual" checked="true">
