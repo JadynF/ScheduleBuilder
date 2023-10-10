@@ -106,14 +106,19 @@ public class Courses {
         this.days.add(parsed[0]);
         this.time.add(parsed[1]);
 
-        this.hourStart.add(Integer.valueOf(parsed[1].substring(0,2)));
-        if (this.hourStart.get(this.numTimes) < 8)
-            this.hourStart.set(this.numTimes, this.hourStart.get(this.numTimes) + 12);
-        this.minuteStart.add(Integer.valueOf(parsed[1].substring(3,5)));
-        this.hourEnd.add(Integer.valueOf(parsed[1].substring(6,8)));
-        if (this.hourEnd.get(this.numTimes) < 8)
-            this.hourEnd.set(this.numTimes, this.hourEnd.get(this.numTimes) + 12);
-        this.minuteEnd.add(Integer.valueOf(parsed[1].substring(9,11)));
+        try {
+            this.hourStart.add(Integer.valueOf(parsed[1].substring(0,2)));
+            if (this.hourStart.get(this.numTimes) < 8)
+                this.hourStart.set(this.numTimes, this.hourStart.get(this.numTimes) + 12);
+            this.minuteStart.add(Integer.valueOf(parsed[1].substring(3,5)));
+            this.hourEnd.add(Integer.valueOf(parsed[1].substring(6,8)));
+            if (this.hourEnd.get(this.numTimes) < 8)
+                this.hourEnd.set(this.numTimes, this.hourEnd.get(this.numTimes) + 12);
+            this.minuteEnd.add(Integer.valueOf(parsed[1].substring(9,11)));
+        }
+        catch (Exception e) {
+            this.open = false;
+        }
 
         this.location = parsed[2] + " ";
         int i = 3;

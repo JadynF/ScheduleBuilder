@@ -150,6 +150,8 @@ public class Scraper {
             String courseID;
             if (subject.length() == 3)
                 courseID = subject + " -" + cNum;
+            else if (subject.length() == 2)
+                courseID = subject + "  -" + cNum;
             else
                 courseID = subject + "-" + cNum;
 

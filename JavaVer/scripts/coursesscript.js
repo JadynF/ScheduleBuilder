@@ -112,19 +112,20 @@ function handleData(data) { // function that takes json data of offered courses,
 
 function showHeader(numSchedules) { // function that changes the main header to show amount of schedule possibilities
 
-    div = document.getElementById("centerBanner"); // reset header
-    header = document.getElementById("centerHeader");
+    th = document.getElementById("numHeaderRow");
+    th.setAttribute("colspan", 8);
+    header = document.getElementById("numHeader");
     header.remove();
     header = document.createElement("h1");
-    header.setAttribute("id", "centerHeader");
+    header.setAttribute("id", "numHeader");
 
     if (numSchedules > 1 || numSchedules === 0) { // plural cases
-        header.appendChild(document.createTextNode(numSchedules + " Schedule Possibilities"));
+        header.appendChild(document.createTextNode(numSchedules + " Schedules"));
     }
     else { // singular case
-        header.appendChild(document.createTextNode(numSchedules + " Schedule Possibility"));
+        header.appendChild(document.createTextNode(numSchedules + " Schedule"));
     }
-    div.appendChild(header);
+    th.appendChild(header);
 }
 
 function presentNullCourses(nullCourses) { // function to show if course has no offerings
