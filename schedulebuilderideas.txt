@@ -1,7 +1,0 @@
-required professor
-
-required class by call number
-
-find a good way to display notes for class
-
-find out how cookies work
