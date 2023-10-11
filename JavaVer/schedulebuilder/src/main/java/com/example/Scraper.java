@@ -29,7 +29,8 @@ public class Scraper {
             if (table.hasClass("datadisplaytable")) { // check for correct table
                 Elements rows = table.select("tr"); // go through each row in table
                 Courses currCourse = null;
-                for (Element row : rows) {
+
+                for (Element row : rows) { // go through each row in table
                     Boolean sameCourse = false; // keeps check for notes and different times for same course
                     Elements rowHeaders = row.select("th");
                     if (rowHeaders.size() > 0) { // if header is present, then new class
@@ -49,6 +50,7 @@ public class Scraper {
                     else {
                         continue;
                     }
+                    
                     for (Element cellData : rowData) { // get each cell in row
                         if (sameCourse) { // if same course add separate time
                             if (cellData.attr("headers").equals("DaysTimeLocation")) {

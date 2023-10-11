@@ -29,11 +29,6 @@ window.onscroll = function() { // set listener for scroll action that loads new 
     }
 };
 
-function copyCallNums(id) {
-
-    console.log("click");
-}
-
 function applyFilter() { // function that gets all filter values and handles the data
 
     scheduleStartPoint = 0;
@@ -79,11 +74,7 @@ function applyFilter() { // function that gets all filter values and handles the
 function handleData(data) { // function that takes json data of offered courses, and completely handles all schedule building and presenting
 
     json = data;
-
-    console.log(json);
-
     table = document.getElementById("coursesTb");
-
     keys = Object.keys(data);
 
     nullCourses = []; // get each course with no offerings
